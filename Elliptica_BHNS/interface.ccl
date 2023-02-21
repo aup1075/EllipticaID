@@ -11,10 +11,10 @@ CCTK_REAL coords_uElliptica type = GF Timelevels = 1 tags='Prolongation = "None"
   x_uElliptica, y_uElliptica, z_uElliptica
 } "coordinates in Elliptica units"
 
-CCTK_REAL bns_parameters TYPE=SCALAR
+CCTK_REAL bhns_parameters TYPE=SCALAR
 {
-  Elliptica_bns_omega
-  Elliptica_bns_separation
+  Elliptica_bhns_omega
+  Elliptica_bhns_separation
 } "Elliptica BNS solution parameters"
 
 
