@@ -1,0 +1,17 @@
+# Schedule definitions for thorn Elliptica_BHNS
+
+if (CCTK_EQUALS (initial_data,    "Elliptica_BHNS") ||
+    CCTK_EQUALS (initial_lapse,   "Elliptica_BHNS") ||
+    CCTK_EQUALS (initial_shift,   "Elliptica_BHNS") ||
+    CCTK_EQUALS (initial_dtlapse, "Elliptica_BHNS") ||
+    CCTK_EQUALS (initial_dtshift, "Elliptica_BHNS") ||
+    CCTK_EQUALS (initial_hydro,   "Elliptica_BHNS"))
+{
+  SCHEDULE Elliptica_BHNS_initialize IN HydroBase_Initial
+  {
+    LANG: C
+  } "Set up black hole neutron star initial data"
+  
+  STORAGE:init_eos_key
+
+}

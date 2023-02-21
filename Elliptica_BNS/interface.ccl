@@ -1,7 +1,7 @@
 # Interface definition for the thorn EllipticaID
 # $Header:$
 
-implements: EllipticaID
+implements: Elliptica_BNS
 inherits: grid PizzaBase PizzaIDBase HydroBase ADMBase
 
 USES INCLUDE: pizza_central.h pizza_idbase.h pizzacactus.h pizza_unitconv.h

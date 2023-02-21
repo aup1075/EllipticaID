@@ -8,34 +8,34 @@ USES CCTK_STRING out_dir
 shares: ADMBase
 EXTENDS keyword initial_data
 { 
-  "EllipticaBNS" :: "BNS Initial data from Elliptica"
+  "Elliptica_BHNS" :: "BNS Initial data from Elliptica"
 }
 
 EXTENDS keyword initial_lapse
 { 
-  "EllipticaBNS" :: "BNS Initial lapse from Elliptica"
+  "Elliptica_BHNS" :: "BNS Initial lapse from Elliptica"
 }
 
 EXTENDS keyword initial_shift
 { 
-  "EllipticaBNS" :: "BNS Initial shift from Elliptica"
+  "Elliptica_BHNS" :: "BNS Initial shift from Elliptica"
 }
 
 shares: HydroBase
 
 EXTENDS keyword initial_hydro
 {
-  "EllipticaBNS" :: "BNS Initial hydro from Elliptica"
+  "Elliptica_BHNS" :: "BNS Initial hydro from Elliptica"
 }
 
 EXTENDS keyword initial_temperature
 {
-  "EllipticaBNS" :: "BNS Initial temperature from Elliptica"
+  "Elliptica_BHNS" :: "BNS Initial temperature from Elliptica"
 }
 
 EXTENDS keyword initial_Y_e
 {
-  "EllipticaBNS" :: "BNS Initial Y_e from Elliptica"
+  "Elliptica_BHNS" :: "BNS Initial Y_e from Elliptica"
 }
 
 #shares:PizzaIDBase
@@ -47,17 +47,21 @@ CCTK_STRING Elliptica_bns_file "File containing Elliptica initial data" STEERABL
   ".+" :: "Pathname"
 } "inif.d"
 
-CCTK_STRING Elliptica_tab_file "File containing cold T=0 EOS" STEERABLE=recover
+STRING eos_table "Initial data EOS identifyer"
 {
-  ".+" :: "Pathname"
-} "../BATCH/include/eos_akmalpr.d"
+  "" :: "Any valid EOS name in EOSOmni"
+} "2D_Polytrope"
 
-#CCTK_STRING Elliptica_eos_name "EOS filename hardcoded in the initial data"
-#{
-#  ".+" :: "Filename"
-#} "eos_akmalpr.d"
+STRING eos_table_filepath "Directory containing the EOS file used to generate the initial data"
+{
+  "" :: "Directory name, default (empty string) is 'do not tell Lorene to overwrite info found in Lorene data'"
+} ""
 
-#BOOLEAN copy_lorene_eos "Work around LORENE EOS file quirk."
-#{
-#} "no"
+STRING beta_file "Directory containing the beta-equilibrium Ye(rho) function -- rho is in cgs"
+{
+  "" :: "Directory name, default (empty string) is 'do not tell Lorene to overwrite info found in Lorene data'"
+} ""
 
+BOOLEAN init_real "are you initializing realistic ID?"
+{
+} "no"

@@ -8,34 +8,34 @@ USES CCTK_STRING out_dir
 shares: ADMBase
 EXTENDS keyword initial_data
 { 
-  "EllipticaBNS" :: "BNS Initial data from Elliptica"
+  "Elliptica_BNS" :: "BNS Initial data from Elliptica"
 }
 
 EXTENDS keyword initial_lapse
 { 
-  "EllipticaBNS" :: "BNS Initial lapse from Elliptica"
+  "Elliptica_BNS" :: "BNS Initial lapse from Elliptica"
 }
 
 EXTENDS keyword initial_shift
 { 
-  "EllipticaBNS" :: "BNS Initial shift from Elliptica"
+  "Elliptica_BNS" :: "BNS Initial shift from Elliptica"
 }
 
 shares: HydroBase
 
 EXTENDS keyword initial_hydro
 {
-  "EllipticaBNS" :: "BNS Initial hydro from Elliptica"
+  "Elliptica_BNS" :: "BNS Initial hydro from Elliptica"
 }
 
 EXTENDS keyword initial_temperature
 {
-  "EllipticaBNS" :: "BNS Initial temperature from Elliptica"
+  "Elliptica_BNS" :: "BNS Initial temperature from Elliptica"
 }
 
 EXTENDS keyword initial_Y_e
 {
-  "EllipticaBNS" :: "BNS Initial Y_e from Elliptica"
+  "Elliptica_BNS" :: "BNS Initial Y_e from Elliptica"
 }
 
 #shares:PizzaIDBase
