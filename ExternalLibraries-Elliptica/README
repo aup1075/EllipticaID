@@ -1,0 +1,16 @@
+Cactus Code Thorn Elliptica
+Author(s)    : Pedro Espino
+Maintainer(s): nobody
+Licence      : GPL
+--------------------------------------------------------------------------
+
+1. Purpose
+
+Distribute the Elliptica library
+
+2. Usage
+Clone Elliptica into the ExternalLibraries-Elliptica/dist/ directory and run the script 
+
+source_elliptica
+
+to move the code into the proper locations and set up the symbolic links
