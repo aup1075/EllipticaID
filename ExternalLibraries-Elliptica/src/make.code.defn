@@ -1,4 +1,4 @@
-# Main make.code.defn file for thorn LORENE
+# Main make.code.defn file for thorn ELLIPTICA
 
 # Source files in this directory
 SRCS = 

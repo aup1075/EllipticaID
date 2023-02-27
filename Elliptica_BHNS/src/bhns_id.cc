@@ -12,6 +12,8 @@
 #include <cctk_Arguments.h>
 #include <cctk_Parameters.h>
 
+#include <umfpack.h>
+
 //#include <bin_ns.h>
 //#include <unites.h>
 //#define MAX_NTAB 16001
