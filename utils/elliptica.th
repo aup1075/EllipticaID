@@ -450,9 +450,9 @@ EinsteinInitialData/IDBrillData
 EinsteinInitialData/IDConstraintViolate
 EinsteinInitialData/IDFileADM
 EinsteinInitialData/IDLinearWaves
-EinsteinInitialData/Meudon_Bin_BH
+#EinsteinInitialData/Meudon_Bin_BH
 #EinsteinInitialData/Meudon_Bin_NS
-EinsteinInitialData/Meudon_Mag_NS
+#EinsteinInitialData/Meudon_Mag_NS
 EinsteinInitialData/NoExcision
 EinsteinInitialData/ReadInterpolate
 EinsteinInitialData/RotatingDBHIVP
@@ -491,7 +491,7 @@ ExternalLibraries/hwloc
 #ExternalLibraries/LAPACK
 ExternalLibraries/libjpeg
 #ExternalLibraries/LORENE
-ExternalLibraries/LORENE2
+#ExternalLibraries/LORENE2
 ExternalLibraries/MPI
 ExternalLibraries/OpenBLAS
 #DISABLED ExternalLibraries/OpenCL
@@ -626,7 +626,7 @@ Proca/TwoPunctures_KerrProca
 !CHECKOUT =
 #WVUThorns/Baikal
 #WVUThorns/BaikalVacuum
-#WVUThorns/Convert_to_HydroBase
+WVUThorns/Convert_to_HydroBase
 #WVUThorns/FishboneMoncriefID
 #WVUThorns/GiRaFFE
 #WVUThorns/GiRaFFEfood

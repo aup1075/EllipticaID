@@ -1,0 +1,44 @@
+#! /bin/bash
+
+echo "Preparing:"
+set -x                          # Output commands
+set -e                          # Abort on errors
+
+cd @RUNDIR@-active
+
+module list
+
+echo "Checking:"
+pwd
+hostname
+date
+
+echo "Environment:"
+export CACTUS_NUM_PROCS=@NUM_PROCS@
+export CACTUS_NUM_THREADS=@NUM_THREADS@
+# export CACTUS_SET_THREAD_BINDINGS=1
+export CXX_MAX_TASKS=500
+export GMON_OUT_PREFIX=gmon.out
+export OMP_MAX_TASKS=500
+export OMP_NUM_THREADS=@NUM_THREADS@
+export OMP_STACKSIZE=8192       # kByte
+export PTHREAD_MAX_TASKS=500
+env | sort > SIMFACTORY/ENVIRONMENT
+echo ${SLURM_NODELIST} > NODES
+
+echo "Starting:"
+export CACTUS_STARTTIME=$(date +%s)
+#time srun --mpi=pmi2 --cpus-per-task=@NUM_THREADS@ --ntasks=@NUM_PROCS@ @EXECUTABLE@ -L 3 @PARFILE@
+# SDSC's ibrun reads SLRUM variables and takes care of a lot of stuff
+# (e.g., setting the number of processes)
+
+# If run with 4 OpenMP threads per node, setting the affinity explicitly leads
+# to small performance gains
+[[ @NUM_THREADS@ == 4 ]] && aff="affinity scatter blk 4" || aff=""
+
+time ibrun $aff @EXECUTABLE@ -L 3 @PARFILE@
+
+echo "Stopping:"
+date
+
+echo "Done."
