@@ -13,7 +13,7 @@ this establishes the correct symbolic links and sets up the environment for comp
 3. Edit the compilation script (simfactory/mdb/optionlists/expanse.cfg) paths for SUITESPARSE_DIR and 
 ELLIPTICA_DIR to your local installs or Alireza's installs
      SUITESPARSE_DIR = /home/arashti/Software/Elliptica_packages/SuiteSparse-5.7.2
-     ELLIPTICA_DIR = /path/to/Elliptica
+     ELLIPTICA_DIR = /home/arashti/Software/Elliptica
 4. compile the EinsteinToolkit
      ./simfactory/bin/sim setup-silent
      ./simfactory/bin/sim build elliptica -j64 --thornlist thornlists/elliptica.th --optionlist simfactory/mdb/optionlists/expanse.cfg --machine expanse | tee OUTCOMP

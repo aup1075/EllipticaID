@@ -6,6 +6,7 @@ cd ExternalLibraries
 ln -s ../../repos/EllipticaID/ExternalLibraries-SuiteSparse SuiteSparse
 ln -s ../../repos/EllipticaID/ExternalLibraries-Elliptica Elliptica
 cd ../../
+cp repos/EllipticaID/utils/elliptica.th thornlists/
 cp repos/EllipticaID/utils/expanse.ini simfactory/mdb/machines/
 cp repos/EllipticaID/utils/expanse.run simfactory/mdb/runscripts/
 cp repos/EllipticaID/utils/expanse.sub simfactory/mdb/submitscripts/
