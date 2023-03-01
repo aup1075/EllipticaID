@@ -1,0 +1,10 @@
+# Configuration definitions for thorn Elliptica
+
+PROVIDES EIDR
+{
+  SCRIPT src/detect.sh
+  LANG bash
+  OPTIONS EIDR_DIR EIDR_INSTALL_DIR EIDR_INC_DIRS EIDR_LIB_DIRS EIDR_LIBS
+}
+
+REQUIRES EIDR
