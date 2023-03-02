@@ -780,6 +780,7 @@ WVUThorns_Diagnostics/VolumeIntegrals_vacuum
 !TARGET   = $ARR
 !TYPE     = ignore
 !CHECKOUT =
-ExternalLibraries/SuiteSparse
-ExternalLibraries/Elliptica
+#ExternalLibraries/SuiteSparse
+#ExternalLibraries/Elliptica
 EllipticaID/Elliptica_BHNS
+ExternalLibraries/EIDR
