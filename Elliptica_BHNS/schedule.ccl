@@ -10,6 +10,7 @@ if (CCTK_EQUALS (initial_data,    "Elliptica_BHNS") ||
   SCHEDULE Elliptica_BHNS_initialize IN HydroBase_Initial
   {
     LANG: C
+    OPTIONS: LOCAL
   } "Set up black hole neutron star initial data"
   
   STORAGE:init_eos_key

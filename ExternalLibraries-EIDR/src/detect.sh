@@ -98,7 +98,7 @@ echo "EIDR_INSTALL_DIR    = ${EIDR_INSTALL_DIR}"
 echo "END MAKE_DEFINITION"
 
 # Set options
-EIDR_INC_DIRS="${EIDR_DIR}/include"
+EIDR_INC_DIRS="${EIDR_DIR}/include ${EIDR_DIR}/src"
 EIDR_LIB_DIRS="${EIDR_DIR}/lib"
 EIDR_LIBS="${EIDR_EXTRA_LIBS}"
 
