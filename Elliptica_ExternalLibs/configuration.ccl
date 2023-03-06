@@ -1,10 +1,7 @@
-# Configuration definitions for thorn Elliptica
-
-PROVIDES EIDR
+# Configuration definitions for thorn Elliptica_ExternalLibs
+PROVIDES Elliptica_ExternalLibs
 {
-  SCRIPT src/detect.sh
-  LANG bash
-  OPTIONS EIDR_DIR EIDR_INSTALL_DIR EIDR_INC_DIRS EIDR_LIB_DIRS EIDR_LIBS
+  SCRIPT 
+  LANG 
 }
 
-REQUIRES EIDR

@@ -1,3 +1,244 @@
-# Interface definition for thorn Elliptica
+# Interface definition for thorn Elliptica_ExternalLibs
 
-IMPLEMENTS: EIDR
+IMPLEMENTS: Elliptica_ExternalLibs
+
+INCLUDE HEADER: 	TOV_lib.h	IN	TOV_lib.h
+INCLUDE HEADER: 	interpolations.h	IN	interpolations.h
+INCLUDE HEADER: 	TOV_main.h	IN	TOV_main.h
+INCLUDE HEADER: 	interpret_tests.h	IN	interpret_tests.h
+INCLUDE HEADER: 	TOV_solution.h	IN	TOV_solution.h
+INCLUDE HEADER: 	macros_lib.h	IN	macros_lib.h
+INCLUDE HEADER: 	Tij_NS_ifluid_xcts_gConf_update.h	IN	Tij_NS_ifluid_xcts_gConf_update.h
+INCLUDE HEADER: 	manifold_header.h	IN	manifold_header.h
+INCLUDE HEADER: 	Tij_header.h	IN	Tij_header.h
+INCLUDE HEADER: 	manifold_lib.h	IN	manifold_lib.h
+INCLUDE HEADER: 	Tij_main.h	IN	Tij_main.h
+INCLUDE HEADER: 	maths_calculus_lib.h	IN	maths_calculus_lib.h
+INCLUDE HEADER: 	adm_header.h	IN	adm_header.h
+INCLUDE HEADER: 	maths_complex_lib.h	IN	maths_complex_lib.h
+INCLUDE HEADER: 	adm_main.h	IN	adm_main.h
+INCLUDE HEADER: 	maths_diff_geom_lib.h	IN	maths_diff_geom_lib.h
+INCLUDE HEADER: 	adm_tests.h	IN	adm_tests.h
+INCLUDE HEADER: 	maths_equation_solvings_lib.h	IN	maths_equation_solvings_lib.h
+INCLUDE HEADER: 	adm_updates.h	IN	adm_updates.h
+INCLUDE HEADER: 	maths_field_analysis_lib.h	IN	maths_field_analysis_lib.h
+INCLUDE HEADER: 	analytic_functions.h	IN	analytic_functions.h
+INCLUDE HEADER: 	maths_general_lib.h	IN	maths_general_lib.h
+INCLUDE HEADER: 	bh_bh.h	IN	bh_bh.h
+INCLUDE HEADER: 	maths_linear_algebra_lib.h	IN	maths_linear_algebra_lib.h
+INCLUDE HEADER: 	bh_bhfiller.h	IN	bh_bhfiller.h
+INCLUDE HEADER: 	maths_matrix_solvers_lib.h	IN	maths_matrix_solvers_lib.h
+INCLUDE HEADER: 	bh_header.h	IN	bh_header.h
+INCLUDE HEADER: 	maths_special_functions_lib.h	IN	maths_special_functions_lib.h
+INCLUDE HEADER: 	bh_main.h	IN	bh_main.h
+INCLUDE HEADER: 	maths_spectral_methods_lib.h	IN	maths_spectral_methods_lib.h
+INCLUDE HEADER: 	bh_properties.h	IN	bh_properties.h
+INCLUDE HEADER: 	misc_functions.h	IN	misc_functions.h
+INCLUDE HEADER: 	bhns_export_id.h	IN	bhns_export_id.h
+INCLUDE HEADER: 	nsns_export_id.h	IN	nsns_export_id.h
+INCLUDE HEADER: 	bhns_header.h	IN	bhns_header.h
+INCLUDE HEADER: 	nsns_header.h	IN	nsns_header.h
+INCLUDE HEADER: 	bhns_initialize.h	IN	bhns_initialize.h
+INCLUDE HEADER: 	nsns_initialize.h	IN	nsns_initialize.h
+INCLUDE HEADER: 	calculus_tests.h	IN	calculus_tests.h
+INCLUDE HEADER: 	obs_calculate.h	IN	obs_calculate.h
+INCLUDE HEADER: 	cartesian_coordinate.h	IN	cartesian_coordinate.h
+INCLUDE HEADER: 	obs_header.h	IN	obs_header.h
+INCLUDE HEADER: 	checkpoint.h	IN	checkpoint.h
+INCLUDE HEADER: 	obs_main.h	IN	obs_main.h
+INCLUDE HEADER: 	checkpoint_lib.h	IN	checkpoint_lib.h
+INCLUDE HEADER: 	parameters.h	IN	parameters.h
+INCLUDE HEADER: 	checkup.h	IN	checkup.h
+INCLUDE HEADER: 	phys_main.h	IN	phys_main.h
+INCLUDE HEADER: 	complex_numbers.h	IN	complex_numbers.h
+INCLUDE HEADER: 	physics_EoS_lib.h	IN	physics_EoS_lib.h
+INCLUDE HEADER: 	convergence_tests.h	IN	convergence_tests.h
+INCLUDE HEADER: 	physics_adm_lib.h	IN	physics_adm_lib.h
+INCLUDE HEADER: 	coordinate_systems.h	IN	coordinate_systems.h
+INCLUDE HEADER: 	physics_blackhole_lib.h	IN	physics_blackhole_lib.h
+INCLUDE HEADER: 	coordinate_utilities.h	IN	coordinate_utilities.h
+INCLUDE HEADER: 	physics_equation_lib.h	IN	physics_equation_lib.h
+INCLUDE HEADER: 	core_lib.h	IN	core_lib.h
+INCLUDE HEADER: 	physics_freedata_lib.h	IN	physics_freedata_lib.h
+INCLUDE HEADER: 	cubed_spherical_coordinate.h	IN	cubed_spherical_coordinate.h
+INCLUDE HEADER: 	physics_lib.h	IN	physics_lib.h
+INCLUDE HEADER: 	derivatives.h	IN	derivatives.h
+INCLUDE HEADER: 	physics_observe_lib.h	IN	physics_observe_lib.h
+INCLUDE HEADER: 	dg_header.h	IN	dg_header.h
+INCLUDE HEADER: 	physics_star_lib.h	IN	physics_star_lib.h
+INCLUDE HEADER: 	elliptica_id_reader_lib.h	IN	elliptica_id_reader_lib.h
+INCLUDE HEADER: 	physics_stress_energy_lib.h	IN	physics_stress_energy_lib.h
+INCLUDE HEADER: 	elliptica_system_lib.h	IN	elliptica_system_lib.h
+INCLUDE HEADER: 	physics_system_lib.h	IN	physics_system_lib.h
+INCLUDE HEADER: 	eos_header.h	IN	eos_header.h
+INCLUDE HEADER: 	physics_transformation_lib.h	IN	physics_transformation_lib.h
+INCLUDE HEADER: 	eos_main.h	IN	eos_main.h
+INCLUDE HEADER: 	pr.h	IN	pr.h
+INCLUDE HEADER: 	eos_polytropics.h	IN	eos_polytropics.h
+INCLUDE HEADER: 	pr_for_fields_structs.h	IN	pr_for_fields_structs.h
+INCLUDE HEADER: 	eos_test.h	IN	eos_test.h
+INCLUDE HEADER: 	pr_for_tests.h	IN	pr_for_tests.h
+INCLUDE HEADER: 	error_handling_lib.h	IN	error_handling_lib.h
+INCLUDE HEADER: 	prints_lib.h	IN	prints_lib.h
+INCLUDE HEADER: 	fd_KerrSchild_BH_surface.h	IN	fd_KerrSchild_BH_surface.h
+INCLUDE HEADER: 	projects.h	IN	projects.h
+INCLUDE HEADER: 	fd_KerrSchild_header.h	IN	fd_KerrSchild_header.h
+INCLUDE HEADER: 	reading_parameter_file.h	IN	reading_parameter_file.h
+INCLUDE HEADER: 	fd_header.h	IN	fd_header.h
+INCLUDE HEADER: 	root_finders.h	IN	root_finders.h
+INCLUDE HEADER: 	fd_main.h	IN	fd_main.h
+INCLUDE HEADER: 	spectral_tests.h	IN	spectral_tests.h
+INCLUDE HEADER: 	fd_populate.h	IN	fd_populate.h
+INCLUDE HEADER: 	spherical_coordinate.h	IN	spherical_coordinate.h
+INCLUDE HEADER: 	field.h	IN	field.h
+INCLUDE HEADER: 	spherical_harmonics.h	IN	spherical_harmonics.h
+INCLUDE HEADER: 	fields_lib.h	IN	fields_lib.h
+INCLUDE HEADER: 	spherical_harmonics_transformation.h	IN	spherical_harmonics_transformation.h
+INCLUDE HEADER: 	file_and_directory.h	IN	file_and_directory.h
+INCLUDE HEADER: 	star_NS.h	IN	star_NS.h
+INCLUDE HEADER: 	fourier_transformation.h	IN	fourier_transformation.h
+INCLUDE HEADER: 	star_NS_surface.h	IN	star_NS_surface.h
+INCLUDE HEADER: 	function_managing.h	IN	function_managing.h
+INCLUDE HEADER: 	star_header.h	IN	star_header.h
+INCLUDE HEADER: 	general.h	IN	general.h
+INCLUDE HEADER: 	star_main.h	IN	star_main.h
+INCLUDE HEADER: 	general_tests.h	IN	general_tests.h
+INCLUDE HEADER: 	star_properties.h	IN	star_properties.h
+INCLUDE HEADER: 	global_variables.h	IN	global_variables.h
+INCLUDE HEADER: 	text_and_file_tools_lib.h	IN	text_and_file_tools_lib.h
+INCLUDE HEADER: 	grid.h	IN	grid.h
+INCLUDE HEADER: 	text_tools.h	IN	text_tools.h
+INCLUDE HEADER: 	id_reader_lib.h	IN	id_reader_lib.h
+INCLUDE HEADER: 	transformation.h	IN	transformation.h
+INCLUDE HEADER: 	idr_main.h	IN	idr_main.h
+INCLUDE HEADER: 	typdef_data.h	IN	typdef_data.h
+INCLUDE HEADER: 	idr_read_write.h	IN	idr_read_write.h
+INCLUDE HEADER: 	useful_functions.h	IN	useful_functions.h
+INCLUDE HEADER: 	integration.h	IN	integration.h
+INCLUDE HEADER: 	utilities_lib.h	IN	utilities_lib.h
+INCLUDE HEADER: 	interface.h	IN	interface.h
+
+################################################################################
+################################################################################
+################################################################################
+################################################################################
+
+
+USES INCLUDE: 	TOV_lib.h
+USES INCLUDE: 	interpolations.h
+USES INCLUDE: 	TOV_main.h
+USES INCLUDE: 	interpret_tests.h
+USES INCLUDE: 	TOV_solution.h
+USES INCLUDE: 	macros_lib.h
+USES INCLUDE: 	Tij_NS_ifluid_xcts_gConf_update.h
+USES INCLUDE: 	manifold_header.h
+USES INCLUDE: 	Tij_header.h
+USES INCLUDE: 	manifold_lib.h
+USES INCLUDE: 	Tij_main.h
+USES INCLUDE: 	maths_calculus_lib.h
+USES INCLUDE: 	adm_header.h
+USES INCLUDE: 	maths_complex_lib.h
+USES INCLUDE: 	adm_main.h
+USES INCLUDE: 	maths_diff_geom_lib.h
+USES INCLUDE: 	adm_tests.h
+USES INCLUDE: 	maths_equation_solvings_lib.h
+USES INCLUDE: 	adm_updates.h
+USES INCLUDE: 	maths_field_analysis_lib.h
+USES INCLUDE: 	analytic_functions.h
+USES INCLUDE: 	maths_general_lib.h
+USES INCLUDE: 	bh_bh.h
+USES INCLUDE: 	maths_linear_algebra_lib.h
+USES INCLUDE: 	bh_bhfiller.h
+USES INCLUDE: 	maths_matrix_solvers_lib.h
+USES INCLUDE: 	bh_header.h
+USES INCLUDE: 	maths_special_functions_lib.h
+USES INCLUDE: 	bh_main.h
+USES INCLUDE: 	maths_spectral_methods_lib.h
+USES INCLUDE: 	bh_properties.h
+USES INCLUDE: 	misc_functions.h
+USES INCLUDE: 	bhns_export_id.h
+USES INCLUDE: 	nsns_export_id.h
+USES INCLUDE: 	bhns_header.h
+USES INCLUDE: 	nsns_header.h
+USES INCLUDE: 	bhns_initialize.h
+USES INCLUDE: 	nsns_initialize.h
+USES INCLUDE: 	calculus_tests.h
+USES INCLUDE: 	obs_calculate.h
+USES INCLUDE: 	cartesian_coordinate.h
+USES INCLUDE: 	obs_header.h
+USES INCLUDE: 	checkpoint.h
+USES INCLUDE: 	obs_main.h
+USES INCLUDE: 	checkpoint_lib.h
+USES INCLUDE: 	parameters.h
+USES INCLUDE: 	checkup.h
+USES INCLUDE: 	phys_main.h
+USES INCLUDE: 	complex_numbers.h
+USES INCLUDE: 	physics_EoS_lib.h
+USES INCLUDE: 	convergence_tests.h
+USES INCLUDE: 	physics_adm_lib.h
+USES INCLUDE: 	coordinate_systems.h
+USES INCLUDE: 	physics_blackhole_lib.h
+USES INCLUDE: 	coordinate_utilities.h
+USES INCLUDE: 	physics_equation_lib.h
+USES INCLUDE: 	core_lib.h
+USES INCLUDE: 	physics_freedata_lib.h
+USES INCLUDE: 	cubed_spherical_coordinate.h
+USES INCLUDE: 	physics_lib.h
+USES INCLUDE: 	derivatives.h
+USES INCLUDE: 	physics_observe_lib.h
+USES INCLUDE: 	dg_header.h
+USES INCLUDE: 	physics_star_lib.h
+USES INCLUDE: 	elliptica_id_reader_lib.h
+USES INCLUDE: 	physics_stress_energy_lib.h
+USES INCLUDE: 	elliptica_system_lib.h
+USES INCLUDE: 	physics_system_lib.h
+USES INCLUDE: 	eos_header.h
+USES INCLUDE: 	physics_transformation_lib.h
+USES INCLUDE: 	eos_main.h
+USES INCLUDE: 	pr.h
+USES INCLUDE: 	eos_polytropics.h
+USES INCLUDE: 	pr_for_fields_structs.h
+USES INCLUDE: 	eos_test.h
+USES INCLUDE: 	pr_for_tests.h
+USES INCLUDE: 	error_handling_lib.h
+USES INCLUDE: 	prints_lib.h
+USES INCLUDE: 	fd_KerrSchild_BH_surface.h
+USES INCLUDE: 	projects.h
+USES INCLUDE: 	fd_KerrSchild_header.h
+USES INCLUDE: 	reading_parameter_file.h
+USES INCLUDE: 	fd_header.h
+USES INCLUDE: 	root_finders.h
+USES INCLUDE: 	fd_main.h
+USES INCLUDE: 	spectral_tests.h
+USES INCLUDE: 	fd_populate.h
+USES INCLUDE: 	spherical_coordinate.h
+USES INCLUDE: 	field.h
+USES INCLUDE: 	spherical_harmonics.h
+USES INCLUDE: 	fields_lib.h
+USES INCLUDE: 	spherical_harmonics_transformation.h
+USES INCLUDE: 	file_and_directory.h
+USES INCLUDE: 	star_NS.h
+USES INCLUDE: 	fourier_transformation.h
+USES INCLUDE: 	star_NS_surface.h
+USES INCLUDE: 	function_managing.h
+USES INCLUDE: 	star_header.h
+USES INCLUDE: 	general.h
+USES INCLUDE: 	star_main.h
+USES INCLUDE: 	general_tests.h
+USES INCLUDE: 	star_properties.h
+USES INCLUDE: 	global_variables.h
+USES INCLUDE: 	text_and_file_tools_lib.h
+USES INCLUDE: 	grid.h
+USES INCLUDE: 	text_tools.h
+USES INCLUDE: 	id_reader_lib.h
+USES INCLUDE: 	transformation.h
+USES INCLUDE: 	idr_main.h
+USES INCLUDE: 	typdef_data.h
+USES INCLUDE: 	idr_read_write.h
+USES INCLUDE: 	useful_functions.h
+USES INCLUDE: 	integration.h
+USES INCLUDE: 	utilities_lib.h
+USES INCLUDE: 	interface.h
+
+
+
