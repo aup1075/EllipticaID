@@ -1,3 +1,9 @@
 # Configuration definition for thorn Meudon_Bin_NS
 
+PROVIDES Elliptica_BHNS
+{
+  SCRIPT src/build.sh
+  LANG bash
+  OPTIONS EIDR_DIR EIDR_INSTALL_DIR EIDR_INC_DIRS EIDR_LIB_DIRS EIDR_LIBS
+}
 REQUIRES EIDR
