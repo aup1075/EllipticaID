@@ -139,7 +139,7 @@ void load_beta_equil( const char beta_equil_file[],
 
     for(i=1;i<=(*n_tab_beta);i++) {
        fscanf(f_beta,"%lf %lf \n",&rho0,&ye) ;
-       log_rho0_table[i]=log10(rho0*cactusM*cactusV);     /* multiply by C^2 to get energy density */
+       log_rho0_table[i]=log10(rho0);     /* multiply by C^2 to get energy density */
        if(ye <= 0.036){
            Y_e_table[i] = 0.036;
        }
@@ -154,6 +154,28 @@ int n_tab_beta;
 double Y_e_tab[MAX_NTAB], log_rho0_tab_beta[MAX_NTAB];
 int n_nearest_beta;
 
+static void set_dt_from_domega (CCTK_ARGUMENTS,
+                                CCTK_REAL const* const var,
+                                CCTK_REAL      * const dtvar,
+                                CCTK_REAL const& omega)
+{
+  DECLARE_CCTK_ARGUMENTS;
+
+  int const npoints = cctk_lsh[0] * cctk_lsh[1] * cctk_lsh[2];
+  vector<CCTK_REAL> dxvar(npoints), dyvar(npoints);
+
+  Diff_gv (cctkGH, 0, var, &dxvar[0], -1);
+  Diff_gv (cctkGH, 1, var, &dyvar[0], -1);
+
+#pragma omp parallel for
+  for (int i=0; i<npoints; ++i) {
+    CCTK_REAL const ephix = +y[i];
+    CCTK_REAL const ephiy = -x[i];
+    CCTK_REAL const dphi_var = ephix * dxvar[i] + ephiy * dyvar[i];
+    dtvar[i] = omega * dphi_var;
+  }
+}
+
 extern "C"
 void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
 {
@@ -164,28 +186,15 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
   if(init_real){CCTK_INFO ("(with realistic EOS)"); load_beta_equil(beta_file, log_rho0_tab_beta, Y_e_tab, &n_tab_beta);}
 
   //TODO: fix these to proper NIST values
-  CCTK_REAL const c_light  = 3e8;      // speed of light [m/s]
-  CCTK_REAL const nuc_dens = 1e12; // Nuclear density as used in Lorene units [kg/m^3]
-  CCTK_REAL const G_grav   = 6e-21;      // gravitational constant [m^3/kg/s^2]
-  CCTK_REAL const M_sun    = 2e30;   // solar mass [kg]
-
-  // Cactus units in terms of SI units:
-  // (These are derived from M = M_sun, c = G = 1, and using 1/M_sun
-  // for the magnetic field)
-  CCTK_REAL const cactusM = M_sun;
-  CCTK_REAL const cactusL = cactusM * G_grav / pow(c_light,2);
-  CCTK_REAL const cactusT = cactusL / c_light;
 
   // Other quantities in terms of Cactus units
-  CCTK_REAL const coord_unit = cactusL / 1.0e+3;         // from km (~1.477)
-  CCTK_REAL const rho_unit   = cactusM / pow(cactusL,3); // from kg/m^3
   CCTK_INT keyerr = 0, anyerr = 0;
 
   //Get EOS_Omni handle 
   if (!(*init_eos_key = EOS_Omni_GetHandle(eos_table)))
     CCTK_WARN(0,"Cannot get initial eos handle, aborting...");
-  CCTK_VInfo(CCTK_THORNSTRING, "Meudon_Bin_NS will use the %s equation of state.", eos_table);
-  CCTK_VInfo(CCTK_THORNSTRING, "Meudon_Bin_NS will use the %d eos handle", *init_eos_key);
+  CCTK_VInfo(CCTK_THORNSTRING, "Elliptica_BHNS will use the %s equation of state.", eos_table);
+  CCTK_VInfo(CCTK_THORNSTRING, "Elliptica_BHNS will use the %d eos handle", *init_eos_key);
 
   //Set up local coordinate arrays
   CCTK_INFO ("Setting up coordinates");
@@ -193,9 +202,9 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
   vector<double> xx(N_points), yy(N_points), zz(N_points);
 #pragma omp parallel for
   for (int i=0; i<N_points; ++i) {
-    xx[i] = x[i] * coord_unit;
-    yy[i] = y[i] * coord_unit;
-    zz[i] = z[i] * coord_unit;
+    xx[i] = x[i];
+    yy[i] = y[i];
+    zz[i] = z[i];
   }
 
   // --------------------------------------------------------------
@@ -203,7 +212,6 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
   // --------------------------------------------------------------
   FILE *file;
   //THERE SHOULD BE A PARAMETER CALLED filename
-  const char *filename="/home/pespino/temp_project/projects/Elliptica_TEST/BH_m7_s0.0_flat--NS_m1.6_O0.0_SLy--d40_full_valgrind_00/BHNS_BH_m7_s0.0_flat--NS_m1.6_O0.0_SLy--d40_full_valgrind_3x3x3_00/checkpoint.dat";
   const char *filename="/home/pespino/temp_project/projects/Elliptica_TEST/BH_m7_s0.0_flat--NS_m1.6_O0.0_SLy--d40_full_valgrind_00/BHNS_BH_m7_s0.0_flat--NS_m1.6_O0.0_SLy--d40_full_valgrind_3x3x3_00/checkpoint.dat"
   //THERE SHOULD BE A PARAMETER CALLED option
   const char *option = "generic";
@@ -229,24 +237,26 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
   try {
     Elliptica_ID_Reader_T *idr = elliptica_id_reader_init(f,option);
     //Print some scalar values from idr
-    CCTK_VInfo (CCTK_THORNSTRING, "omega [rad/s]:       %g", idr->omega);
-    CCTK_VInfo (CCTK_THORNSTRING, "dist [km]:           %g", idr->dist);
-    CCTK_VInfo (CCTK_THORNSTRING, "dist_mass [km]:      %g", idr->dist_mass);
-    CCTK_VInfo (CCTK_THORNSTRING, "mass1_b [M_sun]:     %g", idr->mass1_b);
-    CCTK_VInfo (CCTK_THORNSTRING, "mass2_b [M_sun]:     %g", idr->mass2_b);
-    CCTK_VInfo (CCTK_THORNSTRING, "mass_ADM [M_sun]:    %g", idr->mass_adm);
-    CCTK_VInfo (CCTK_THORNSTRING, "L_tot [G M_sun^2/c]: %g", idr->angu_mom);
-    CCTK_VInfo (CCTK_THORNSTRING, "rad1_x_comp [km]:    %g", idr->rad1_x_comp);
-    CCTK_VInfo (CCTK_THORNSTRING, "rad1_y [km]:         %g", idr->rad1_y);
-    CCTK_VInfo (CCTK_THORNSTRING, "rad1_z [km]:         %g", idr->rad1_z);
-    CCTK_VInfo (CCTK_THORNSTRING, "rad1_x_opp [km]:     %g", idr->rad1_x_opp);
-    CCTK_VInfo (CCTK_THORNSTRING, "rad2_x_comp [km]:    %g", idr->rad2_x_comp);
-    CCTK_VInfo (CCTK_THORNSTRING, "rad2_y [km]:         %g", idr->rad2_y);
-    CCTK_VInfo (CCTK_THORNSTRING, "rad2_z [km]:         %g", idr->rad2_z);
-    CCTK_VInfo (CCTK_THORNSTRING, "rad2_x_opp [km]:     %g", idr->rad2_x_opp);
+    CCTK_REAL Omega = 0.011592023119370;
+    CCTK_VInfo (CCTK_THORNSTRING, "omega [rad/s]:       %g", Omega);
+//    CCTK_VInfo (CCTK_THORNSTRING, "dist [km]:           %g", idr->dist);
+//    CCTK_VInfo (CCTK_THORNSTRING, "dist_mass [km]:      %g", idr->dist_mass);
+//    CCTK_VInfo (CCTK_THORNSTRING, "mass1_b [M_sun]:     %g", idr->mass1_b);
+//    CCTK_VInfo (CCTK_THORNSTRING, "mass2_b [M_sun]:     %g", idr->mass2_b);
+//    CCTK_VInfo (CCTK_THORNSTRING, "mass_ADM [M_sun]:    %g", idr->mass_adm);
+//    CCTK_VInfo (CCTK_THORNSTRING, "L_tot [G M_sun^2/c]: %g", idr->angu_mom);
+//    CCTK_VInfo (CCTK_THORNSTRING, "rad1_x_comp [km]:    %g", idr->rad1_x_comp);
+//    CCTK_VInfo (CCTK_THORNSTRING, "rad1_y [km]:         %g", idr->rad1_y);
+//    CCTK_VInfo (CCTK_THORNSTRING, "rad1_z [km]:         %g", idr->rad1_z);
+//    CCTK_VInfo (CCTK_THORNSTRING, "rad1_x_opp [km]:     %g", idr->rad1_x_opp);
+//    CCTK_VInfo (CCTK_THORNSTRING, "rad2_x_comp [km]:    %g", idr->rad2_x_comp);
+//    CCTK_VInfo (CCTK_THORNSTRING, "rad2_y [km]:         %g", idr->rad2_y);
+//    CCTK_VInfo (CCTK_THORNSTRING, "rad2_z [km]:         %g", idr->rad2_z);
+//    CCTK_VInfo (CCTK_THORNSTRING, "rad2_x_opp [km]:     %g", idr->rad2_x_opp);
     double K = 100.0; // make sure ths is in polytropic units
-    idr->ifields = "alpha,adm_gxx,adm_gxy";
-    idr->npoints = npoints;
+    double Gamma = 2.0; // make sure ths is in polytropic units
+    idr->ifields = "alpha,betax,betay,betaz,adm_gxx,adm_gxy,adm_gxz,adm_gyy,adm_gyz,adm_gzz,adm_Kxx,adm_Kxy,adm_Kxz,adm_Kyy,adm_Kyz,adm_Kzz,grhd_rho,grhd_epsl,grhd_vx,grhd_vy,grhd_vz";
+    idr->npoints = N_points;
 //    double x[2] = {1,2};
     idr->x_coords = xx;
     idr->y_coords = yy;
@@ -257,19 +267,120 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
     
     elliptica_id_reader_interpolate(idr);
 
-//    
-//    printf("%g %g\n",
-//        idr->field[idr->indx("alpha")][0],
-//        idr->field[idr->indx("alpha")][1]);
-//
-//    printf("%g %g\n",
-//        idr->field[idr->indx("adm_gxx")][0],
-//        idr->field[idr->indx("adm_gxx")][1]);
-//
-//    printf("%g %g\n",
-//        idr->field[idr->indx("adm_gxy")][0],
-//        idr->field[idr->indx("adm_gxy")][1]);
-//
 //    elliptica_id_reader_free(idr);
+#pragma omp parallel for
+  for (int i=0; i<N_points; ++i) {
+
+    if (CCTK_EQUALS(initial_lapse, "Elliptica_BHNS")) { 
+      alp[i] = field[idr->indx("alpha")][i];
+    }
+
+    //TODO: this is modified by a negative sign from LORENE ID. Is that needed here?
+    if (CCTK_EQUALS(initial_shift, "Elliptica_BHNS")) { 
+      betax[i] = field[idr->indx("betax")][i];
+      betay[i] = field[idr->indx("betay")][i];
+      betaz[i] = field[idr->indx("betaz")][i];
+    }
+
+    if (CCTK_EQUALS(initial_data, "Elliptica_BHNS")) {
+      gxx[i] = field[idr->indx("adm_gxx")][i];
+      gxy[i] = field[idr->indx("adm_gxy")][i];
+      gxz[i] = field[idr->indx("adm_gxz")][i];
+      gyy[i] = field[idr->indx("adm_gyy")][i];
+      gyz[i] = field[idr->indx("adm_gyz")][i];
+      gzz[i] = field[idr->indx("adm_gzz")][i];
+
+      kxx[i] = field[idr->indx("adm_Kxx")][i];
+      kxy[i] = field[idr->indx("adm_Kxy")][i];
+      kxz[i] = field[idr->indx("adm_Kxz")][i];
+      kyy[i] = field[idr->indx("adm_Kyy")][i];
+      kyz[i] = field[idr->indx("adm_Kyz")][i];
+      kzz[i] = field[idr->indx("adm_Kzz")][i];
+    }
+
+    if (CCTK_EQUALS(initial_data, "Elliptica_BHNS")) {
+      rho[i] = field[idr->indx("grhd_rho")][i];
+      if(init_real){
+      if(rho[i]>=1e-7){
+          double yeres = interp(log_rho0_tab_beta, Y_e_tab, n_tab_beta,log10(rho[i]), &n_nearest_beta);
+	  if(yeres <=0.036){yeres = 0.036;} 
+	  Y_e[i] = yeres;
+          temperature[i] = 0.1;
+      }
+      else{Y_e[i] = 0.25;}
+      temperature[i] = 0.1;
+      }
+      if (!recalculate_eps){ //we don't know the temperature, so assume epsilon from ID is correct.
+        eps[i] = field[idr->indx("grhd_epsl")][i];
+      }
+      // Pressure from EOS_Omni call 
+      if (CCTK_ActiveTimeLevelsVN(cctkGH, "HydroBase::temperature") > 0 &&
+          CCTK_ActiveTimeLevelsVN(cctkGH, "HydroBase::Y_e") > 0)
+      {
+        EOS_Omni_press(*init_eos_key,recalculate_eps,eos_precision,1,&(rho[i]),&(eps[i]),
+                       &(temperature[i]),&(Y_e[i]),&(press[i]),&keyerr,&anyerr);
+
+
+      }
+      else
+      {
+        EOS_Omni_press(*init_eos_key,recalculate_eps,eos_precision,1,&(rho[i]),&(eps[i]),
+                       NULL,NULL,&(press[i]),&keyerr,&anyerr);
+      }
+
+      vel[i          ] = field[idr->indx("grhd_vx")][i];
+      vel[i+  npoints] = field[idr->indx("grhd_vy")][i];
+      vel[i+2*npoints] = field[idr->indx("grhd_vz")][i];
+
+      // Especially the velocity is set to strange values outside of the
+      // matter region, so take care of this in the following way
+      if (rho[i] < 1.e-15) {
+        rho[i          ] = 1.e-15;
+        vel[i          ] = 0.0;
+        vel[i+  npoints] = 0.0;
+        vel[i+2*npoints] = 0.0;
+        eps[i          ] = K * pow(rho[i], Gamma-1.) / (Gamma-1.);
+        press[i        ] = K * pow(rho[i], Gamma);
+      }
+    }
+
+  } // for i
+
+  {
+    // Angular velocity
+    //CCTK_REAL const omega = idr->omega * cactusT;
+
+    // These initial data assume a helical Killing vector field
+
+    if (CCTK_EQUALS(initial_lapse, "Elliptica_BHNS")) { 
+      if (CCTK_EQUALS (initial_dtlapse, "Elliptica_BHNS")) {
+        CCTK_INFO ("Calculating time derivatives of lapse");
+        set_dt_from_domega (CCTK_PASS_CTOC, alp, dtalp, Omega);
+      } else if (CCTK_EQUALS (initial_dtlapse, "none") or CCTK_EQUALS(initial_dtlapse,"zero")) {
+        // do nothing
+      } else {
+        CCTK_WARN (CCTK_WARN_ABORT, "internal error setting dtlapse");
+      }
+    }
+
+    if (CCTK_EQUALS(initial_shift, "Elliptica_BHNS")) { 
+      if (CCTK_EQUALS (initial_dtshift, "Elliptica_BHNS")) {
+        CCTK_INFO ("Calculating time derivatives of shift");
+        set_dt_from_domega (CCTK_PASS_CTOC, betax, dtbetax, Omega);
+        set_dt_from_domega (CCTK_PASS_CTOC, betay, dtbetay, Omega);
+        set_dt_from_domega (CCTK_PASS_CTOC, betaz, dtbetaz, Omega);
+      } else if (CCTK_EQUALS (initial_dtshift, "none") or CCTK_EQUALS(initial_dtshift,"zero")) {
+        // do nothing
+      } else {
+        CCTK_WARN (CCTK_WARN_ABORT, "internal error setting dtshift");
+      }
+    }
+  }
+
+  CCTK_INFO ("Done.");
+  } catch (ios::failure e) {
+    CCTK_VWarn (CCTK_WARN_ABORT, __LINE__, __FILE__, CCTK_THORNSTRING,
+                "Could not read initial data from file '%s': %s", filename, e.what());
+  }
 }
 
