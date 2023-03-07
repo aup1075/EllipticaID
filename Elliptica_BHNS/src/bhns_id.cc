@@ -5,7 +5,7 @@
 #include <cctk_Parameters.h>
 
 #include <stdio.h>
-#include <elliptica_id_reader_lib.h>
+#include "elliptica_id_reader_lib.h"
 //#include <idr_main.h>
 //#include <idr_main.c>
 
