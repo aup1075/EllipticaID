@@ -1,4 +1,4 @@
-# Main make.code.defn file for thorn Meudon_Bin_NS
+# Main make.code.defn file for thorn Elliptica BHNS
 
 # Source files in this directory
 SRCS = bhns_id.cc
