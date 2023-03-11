@@ -1,9 +1,9 @@
-/* (c) 2023 Pedro Espino */
+/* (c) 2023 Pedro Espino & Alireza Rashti */
 
 #include <cctk.h>
 #include <cctk_Arguments.h>
 #include <cctk_Parameters.h>
-
+#include <vector>
 #include <stdio.h>
 #include <elliptica_id_reader_lib.h>
 //#include <idr_main.h>
@@ -154,6 +154,7 @@ int n_tab_beta;
 double Y_e_tab[MAX_NTAB], log_rho0_tab_beta[MAX_NTAB];
 int n_nearest_beta;
 
+using namespace std;
 static void set_dt_from_domega (CCTK_ARGUMENTS,
                                 CCTK_REAL const* const var,
                                 CCTK_REAL      * const dtvar,
@@ -176,7 +177,6 @@ static void set_dt_from_domega (CCTK_ARGUMENTS,
   }
 }
 
-extern "C"
 void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
 {
     DECLARE_CCTK_ARGUMENTS;
@@ -199,6 +199,7 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
   //Set up local coordinate arrays
   CCTK_INFO ("Setting up coordinates");
   int const N_points = cctk_lsh[0] * cctk_lsh[1] * cctk_lsh[2];
+  // TODO: can we cast vector<double> to raw double?
   vector<double> xx(N_points), yy(N_points), zz(N_points);
 #pragma omp parallel for
   for (int i=0; i<N_points; ++i) {
@@ -211,9 +212,9 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
   //   CHECKING FILE NAME EXISTENCE
   // --------------------------------------------------------------
   FILE *file;
-  //THERE SHOULD BE A PARAMETER CALLED filename
-  const char *filename="/home/pespino/temp_project/projects/Elliptica_TEST/BH_m7_s0.0_flat--NS_m1.6_O0.0_SLy--d40_full_valgrind_00/BHNS_BH_m7_s0.0_flat--NS_m1.6_O0.0_SLy--d40_full_valgrind_3x3x3_00/checkpoint.dat"
-  //THERE SHOULD BE A PARAMETER CALLED option
+  // TODO: THERE SHOULD BE A PARAMETER CALLED filename
+  const char *filename="/home/pespino/temp_project/projects/Elliptica_TEST/BH_m7_s0.0_flat--NS_m1.6_O0.0_SLy--d40_full_valgrind_00/BHNS_BH_m7_s0.0_flat--NS_m1.6_O0.0_SLy--d40_full_valgrind_3x3x3_00/checkpoint.dat";
+  //TODO: THERE SHOULD BE A PARAMETER CALLED option
   const char *option = "generic";
   if ((file = fopen(filename, "r")) != NULL) 
      fclose(file);
@@ -233,9 +234,7 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
 
     
   try {
-
-  try {
-    Elliptica_ID_Reader_T *idr = elliptica_id_reader_init(f,option);
+    Elliptica_ID_Reader_T *idr = elliptica_id_reader_init(filename,option);
     //Print some scalar values from idr
     CCTK_REAL Omega = 0.011592023119370;
     CCTK_VInfo (CCTK_THORNSTRING, "omega [rad/s]:       %g", Omega);
