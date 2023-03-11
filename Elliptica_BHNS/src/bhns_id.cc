@@ -5,6 +5,10 @@
 #include <cctk_Parameters.h>
 #include <vector>
 #include <stdio.h>
+#include <cassert>
+#include <cstdlib>
+
+
 #include <elliptica_id_reader_lib.h>
 //#include <idr_main.h>
 //#include <idr_main.c>
@@ -199,8 +203,10 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
   //Set up local coordinate arrays
   CCTK_INFO ("Setting up coordinates");
   int const N_points = cctk_lsh[0] * cctk_lsh[1] * cctk_lsh[2];
-  // TODO: can we cast vector<double> to raw double?
-  vector<double> xx(N_points), yy(N_points), zz(N_points);
+  double *xx = (double *)calloc(N_points,sizeof(*xx)); assert(xx);
+  double *yy = (double *)calloc(N_points,sizeof(*yy)); assert(yy);
+  double *zz = (double *)calloc(N_points,sizeof(*zz)); assert(zz);
+  
 #pragma omp parallel for
   for (int i=0; i<N_points; ++i) {
     xx[i] = x[i];
@@ -381,5 +387,10 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
     CCTK_VWarn (CCTK_WARN_ABORT, __LINE__, __FILE__, CCTK_THORNSTRING,
                 "Could not read initial data from file '%s': %s", filename, e.what());
   }
+
+  // free  
+  if (xx) free(xx);
+  if (yy) free(yy);
+  if (zz) free(zz);
 }
 
