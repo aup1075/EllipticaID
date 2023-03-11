@@ -240,8 +240,9 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
     
   try {
     Elliptica_ID_Reader_T *idr = elliptica_id_reader_init(filename,option);
+    //TODO: read the following from ELLIPTICA
     //Print some scalar values from idr
-    CCTK_REAL Omega = 0.011592023119370;
+    CCTK_REAL Omega = idr->get_param_dbl("BHNS_angular_velocity",idr);
     CCTK_VInfo (CCTK_THORNSTRING, "omega [rad/s]:       %g", Omega);
 //    CCTK_VInfo (CCTK_THORNSTRING, "dist [km]:           %g", idr->dist);
 //    CCTK_VInfo (CCTK_THORNSTRING, "dist_mass [km]:      %g", idr->dist_mass);
@@ -257,11 +258,11 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
 //    CCTK_VInfo (CCTK_THORNSTRING, "rad2_y [km]:         %g", idr->rad2_y);
 //    CCTK_VInfo (CCTK_THORNSTRING, "rad2_z [km]:         %g", idr->rad2_z);
 //    CCTK_VInfo (CCTK_THORNSTRING, "rad2_x_opp [km]:     %g", idr->rad2_x_opp);
+    // TODO: reading EOS from Elliptica
     double K = 100.0; // make sure ths is in polytropic units
     double Gamma = 2.0; // make sure ths is in polytropic units
     idr->ifields = "alpha,betax,betay,betaz,adm_gxx,adm_gxy,adm_gxz,adm_gyy,adm_gyz,adm_gzz,adm_Kxx,adm_Kxy,adm_Kxz,adm_Kyy,adm_Kyz,adm_Kzz,grhd_rho,grhd_epsl,grhd_vx,grhd_vy,grhd_vz";
     idr->npoints = N_points;
-//    double x[2] = {1,2};
     idr->x_coords = xx;
     idr->y_coords = yy;
     idr->z_coords = zz;
@@ -271,7 +272,6 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
     
     elliptica_id_reader_interpolate(idr);
 
-//    elliptica_id_reader_free(idr);
 #pragma omp parallel for
   for (int i=0; i<N_points; ++i) {
 
@@ -388,6 +388,7 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
   }
 
   // free  
+  elliptica_id_reader_free(idr);
   if (xx) free(xx);
   if (yy) free(yy);
   if (zz) free(zz);
