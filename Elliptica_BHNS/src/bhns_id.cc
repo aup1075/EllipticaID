@@ -9,11 +9,12 @@
 #include <cstdlib>
 #include <elliptica_id_reader_lib.h>
 
-#define MAX_NTAB 16001
+#define MAX_NTAB (16001)
 #define IMAX(a,b) ( a>b ? a : b ) 
 #define IMIN(a,b) ( a<b ? a : b ) 
 #define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
 #ifndef DBL_EPSILON
+// TODO: should this be really this much small?
 #define DBL_EPSILON 1e-15
 #endif
 
