@@ -7,11 +7,8 @@
 #include <stdio.h>
 #include <cassert>
 #include <cstdlib>
-
-
 #include <elliptica_id_reader_lib.h>
-//#include <idr_main.h>
-//#include <idr_main.c>
+
 #define MAX_NTAB 16001
 #define IMAX(a,b) ( a>b ? a : b ) 
 #define IMIN(a,b) ( a<b ? a : b ) 
@@ -19,6 +16,8 @@
 #ifndef DBL_EPSILON
 #define DBL_EPSILON 1e-15
 #endif
+
+using namespace std;
 
 /*C*/
 /***************************************************************************/
@@ -158,7 +157,6 @@ int n_tab_beta;
 double Y_e_tab[MAX_NTAB], log_rho0_tab_beta[MAX_NTAB];
 int n_nearest_beta;
 
-using namespace std;
 static void set_dt_from_domega (CCTK_ARGUMENTS,
                                 CCTK_REAL const* const var,
                                 CCTK_REAL      * const dtvar,
@@ -266,8 +264,8 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
     idr->x_coords = xx;
     idr->y_coords = yy;
     idr->z_coords = zz;
-    idr->param("BHNS_filler_method","ChebTn_Ylm_perfect_s2",idr);
-    idr->param("ADM_B1I_form","zero",idr);
+    idr->set_param("BHNS_filler_method","ChebTn_Ylm_perfect_s2",idr);
+    idr->set_param("ADM_B1I_form","zero",idr);
     
     
     elliptica_id_reader_interpolate(idr);
@@ -277,34 +275,34 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
   for (int i=0; i<N_points; ++i) {
 
     if (CCTK_EQUALS(initial_lapse, "Elliptica_BHNS")) { 
-      alp[i] = field[idr->indx("alpha")][i];
+      alp[i] = idr->field[idr->indx("alpha")][i];
     }
 
     //TODO: this is modified by a negative sign from LORENE ID. Is that needed here?
     if (CCTK_EQUALS(initial_shift, "Elliptica_BHNS")) { 
-      betax[i] = field[idr->indx("betax")][i];
-      betay[i] = field[idr->indx("betay")][i];
-      betaz[i] = field[idr->indx("betaz")][i];
+      betax[i] = idr->field[idr->indx("betax")][i];
+      betay[i] = idr->field[idr->indx("betay")][i];
+      betaz[i] = idr->field[idr->indx("betaz")][i];
     }
 
     if (CCTK_EQUALS(initial_data, "Elliptica_BHNS")) {
-      gxx[i] = field[idr->indx("adm_gxx")][i];
-      gxy[i] = field[idr->indx("adm_gxy")][i];
-      gxz[i] = field[idr->indx("adm_gxz")][i];
-      gyy[i] = field[idr->indx("adm_gyy")][i];
-      gyz[i] = field[idr->indx("adm_gyz")][i];
-      gzz[i] = field[idr->indx("adm_gzz")][i];
+      gxx[i] = idr->field[idr->indx("adm_gxx")][i];
+      gxy[i] = idr->field[idr->indx("adm_gxy")][i];
+      gxz[i] = idr->field[idr->indx("adm_gxz")][i];
+      gyy[i] = idr->field[idr->indx("adm_gyy")][i];
+      gyz[i] = idr->field[idr->indx("adm_gyz")][i];
+      gzz[i] = idr->field[idr->indx("adm_gzz")][i];
 
-      kxx[i] = field[idr->indx("adm_Kxx")][i];
-      kxy[i] = field[idr->indx("adm_Kxy")][i];
-      kxz[i] = field[idr->indx("adm_Kxz")][i];
-      kyy[i] = field[idr->indx("adm_Kyy")][i];
-      kyz[i] = field[idr->indx("adm_Kyz")][i];
-      kzz[i] = field[idr->indx("adm_Kzz")][i];
+      kxx[i] = idr->field[idr->indx("adm_Kxx")][i];
+      kxy[i] = idr->field[idr->indx("adm_Kxy")][i];
+      kxz[i] = idr->field[idr->indx("adm_Kxz")][i];
+      kyy[i] = idr->field[idr->indx("adm_Kyy")][i];
+      kyz[i] = idr->field[idr->indx("adm_Kyz")][i];
+      kzz[i] = idr->field[idr->indx("adm_Kzz")][i];
     }
 
     if (CCTK_EQUALS(initial_data, "Elliptica_BHNS")) {
-      rho[i] = field[idr->indx("grhd_rho")][i];
+      rho[i] = idr->field[idr->indx("grhd_rho")][i];
       if(init_real){
       if(rho[i]>=1e-7){
           double yeres = interp(log_rho0_tab_beta, Y_e_tab, n_tab_beta,log10(rho[i]), &n_nearest_beta);
@@ -316,7 +314,7 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
       temperature[i] = 0.1;
       }
       if (!recalculate_eps){ //we don't know the temperature, so assume epsilon from ID is correct.
-        eps[i] = field[idr->indx("grhd_epsl")][i];
+        eps[i] = idr->field[idr->indx("grhd_epsl")][i];
       }
       // Pressure from EOS_Omni call 
       if (CCTK_ActiveTimeLevelsVN(cctkGH, "HydroBase::temperature") > 0 &&
@@ -333,17 +331,17 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
                        NULL,NULL,&(press[i]),&keyerr,&anyerr);
       }
 
-      vel[i          ] = field[idr->indx("grhd_vx")][i];
-      vel[i+  npoints] = field[idr->indx("grhd_vy")][i];
-      vel[i+2*npoints] = field[idr->indx("grhd_vz")][i];
+      vel[i          ] = idr->field[idr->indx("grhd_vx")][i];
+      vel[i+  N_points] = idr->field[idr->indx("grhd_vy")][i];
+      vel[i+2*N_points] = idr->field[idr->indx("grhd_vz")][i];
 
       // Especially the velocity is set to strange values outside of the
       // matter region, so take care of this in the following way
       if (rho[i] < 1.e-15) {
         rho[i          ] = 1.e-15;
         vel[i          ] = 0.0;
-        vel[i+  npoints] = 0.0;
-        vel[i+2*npoints] = 0.0;
+        vel[i+  N_points] = 0.0;
+        vel[i+2*N_points] = 0.0;
         eps[i          ] = K * pow(rho[i], Gamma-1.) / (Gamma-1.);
         press[i        ] = K * pow(rho[i], Gamma);
       }
