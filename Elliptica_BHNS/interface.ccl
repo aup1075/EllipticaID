@@ -13,7 +13,7 @@ CCTK_REAL bhns_parameters TYPE=SCALAR
 {
   Elliptica_bhns_omega
   Elliptica_bhns_separation
-} "Elliptica BNS solution parameters"
+} "Elliptica BNNS solution parameters"
 
 SUBROUTINE Diff_gv (CCTK_POINTER_TO_CONST IN cctkGH, \
                     CCTK_INT IN dir, \
