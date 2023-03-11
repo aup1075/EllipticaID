@@ -75,3 +75,12 @@ STRING beta_file "Directory containing the beta-equilibrium Ye(rho) function -- 
 BOOLEAN init_real "are you initializing realistic ID?"
 {
 } "no"
+
+BOOLEAN recalculate_eps "Should eps be recalculated (default), or taken from Lorene data? TODO?"
+{
+} "yes"
+
+CCTK_REAL eos_precision "precision of EOS calculations in EOSOmni"
+{
+  0:* :: "any positive number"
+} 1.e-8
