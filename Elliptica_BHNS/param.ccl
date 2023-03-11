@@ -64,12 +64,12 @@ STRING eos_table "Initial data EOS identifyer"
 
 STRING eos_table_filepath "Directory containing the EOS file used to generate the initial data"
 {
-  "" :: "Directory name, default (empty string) is 'do not tell Lorene to overwrite info found in Lorene data'"
+  "" :: "Directory name, default (empty string) is 'do not tell Lorene to overwrite info found in Lorene TODO?'"
 } ""
 
 STRING beta_file "Directory containing the beta-equilibrium Ye(rho) function -- rho is in cgs"
 {
-  "" :: "Directory name, default (empty string) is 'do not tell Lorene to overwrite info found in Lorene data'"
+  "" :: "Directory name, default (empty string) is 'do not tell Lorene to overwrite info found in Lorene data TODO?'"
 } ""
 
 BOOLEAN init_real "are you initializing realistic ID?"
