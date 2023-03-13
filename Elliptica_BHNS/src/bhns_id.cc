@@ -20,11 +20,12 @@
 
 using namespace std;
 
+//TODO: MOVE THESE FUNCTIONS TO LOCAL SCOPE (same for Meudon)
 /*C*/
 /***************************************************************************/
 /* Routine that locates nearest grid point for a given value.              */
 /***************************************************************************/
-void hunt(double xx[], int n, double x, int *jlo)
+void huntloc(double xx[], int n, double x, int *jlo)
 { 
 	int jm,jhi,inc,ascnd;
 
@@ -76,7 +77,7 @@ void hunt(double xx[], int n, double x, int *jlo)
 /* Driver for the interpolation routine. First we find the tab. point    */
 /* nearest to xb, then we interpolate using four points around xb.       */  
 /*************************************************************************/
-double interp(double xp[], 
+double interploc(double xp[], 
               double yp[], 
               int    np ,
               double xb, 
@@ -87,7 +88,7 @@ double interp(double xp[],
  
  double y;     /* intermediate value */
 
- hunt(xp,np,xb,n_nearest_pt);
+ huntloc(xp,np,xb,n_nearest_pt);
 
  k=IMIN(IMAX((*n_nearest_pt)-(m-1)/2,1),np+1-m);
 
@@ -111,10 +112,10 @@ double interp(double xp[],
 /*************************************************************************/
 /* Load Beta equil file.                                                        */
 /*************************************************************************/
-void load_beta_equil( const char beta_equil_file[],
+void load_beta_equilloc( const char beta_equil_file[],
                double log_rho0_table[MAX_NTAB],
                double Y_e_table[MAX_NTAB],
-               int *n_tab_beta)
+               int *n_tab_betaloc)
 {
  int i;                    /* counter */
 
@@ -137,11 +138,11 @@ void load_beta_equil( const char beta_equil_file[],
 
     /* READ NUMBER OF TABULATED POINTS */
 
-    fscanf(f_beta,"%d\n",n_tab_beta);
+    fscanf(f_beta,"%d\n",n_tab_betaloc);
 
     /* READ ENERGY DENSITY, P, H, N0 AND CONVERT TO CACTUS UNITS */
 
-    for(i=1;i<=(*n_tab_beta);i++) {
+    for(i=1;i<=(*n_tab_betaloc);i++) {
        fscanf(f_beta,"%lf %lf \n",&rho0,&ye) ;
        log_rho0_table[i]=log10(rho0);     /* multiply by C^2 to get energy density */
        if(ye <= 0.036){
@@ -154,9 +155,9 @@ void load_beta_equil( const char beta_equil_file[],
 }
 
 //Auxiliary variables for interepolating Beta equilibrium table
-int n_tab_beta;
-double Y_e_tab[MAX_NTAB], log_rho0_tab_beta[MAX_NTAB];
-int n_nearest_beta;
+int n_tab_betaloc;
+double Y_e_tabloc[MAX_NTAB], log_rho0_tab_betaloc[MAX_NTAB];
+int n_nearest_betaloc;
 
 static void set_dt_from_domega (CCTK_ARGUMENTS,
                                 CCTK_REAL const* const var,
@@ -185,10 +186,9 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
     DECLARE_CCTK_ARGUMENTS;
     DECLARE_CCTK_PARAMETERS;
 
-  CCTK_INFO ("Setting up LORENE Bin_NS initial data");
-  if(init_real){CCTK_INFO ("(with realistic EOS)"); load_beta_equil(beta_file, log_rho0_tab_beta, Y_e_tab, &n_tab_beta);}
+  CCTK_INFO ("Setting up Elliptica BHNS initial data");
+  if(init_real){CCTK_INFO ("(with realistic EOS)"); load_beta_equilloc(beta_file, log_rho0_tab_betaloc, Y_e_tabloc, &n_tab_betaloc);}
 
-  //TODO: fix these to proper NIST values
 
   // Other quantities in terms of Cactus units
   CCTK_INT keyerr = 0, anyerr = 0;
@@ -217,15 +217,11 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
   //   CHECKING FILE NAME EXISTENCE
   // --------------------------------------------------------------
   FILE *file;
-  // TODO: THERE SHOULD BE A PARAMETER CALLED filename
-  const char *filename="/home/pespino/temp_project/projects/Elliptica_TEST/BH_m7_s0.0_flat--NS_m1.6_O0.0_SLy--d40_full_valgrind_00/BHNS_BH_m7_s0.0_flat--NS_m1.6_O0.0_SLy--d40_full_valgrind_3x3x3_00/checkpoint.dat";
-  //TODO: THERE SHOULD BE A PARAMETER CALLED option
-  const char *option = "generic";
-  if ((file = fopen(filename, "r")) != NULL) 
+  if ((file = fopen(Elliptica_bhns_file, "r")) != NULL) 
      fclose(file);
   else {
      CCTK_VError(__LINE__, __FILE__, CCTK_THORNSTRING,
-                 "File \"%s\" does not exist. ABORTING", filename);
+                 "File \"%s\" does not exist. ABORTING", Elliptica_bhns_file);
   }
   // when using EOS, check for EOS file.
   //if (strlen(eos_table_filepath) > 0) {
@@ -235,29 +231,57 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
   //  }
   //}
 
-  CCTK_VInfo (CCTK_THORNSTRING, "Reading from file \"%s\"", filename);
+  CCTK_VInfo (CCTK_THORNSTRING, "Reading from file \"%s\"", Elliptica_bhns_file);
 
     
   try {
-    Elliptica_ID_Reader_T *idr = elliptica_id_reader_init(filename,option);
-    //TODO: read the following from ELLIPTICA
+    Elliptica_ID_Reader_T *idr = elliptica_id_reader_init(Elliptica_bhns_file,Elliptica_bhns_option);
     //Print some scalar values from idr
-    CCTK_REAL Omega = idr->get_param_dbl("BHNS_angular_velocity",idr);
-    CCTK_VInfo (CCTK_THORNSTRING, "omega [rad/s]:       %g", Omega);
-//    CCTK_VInfo (CCTK_THORNSTRING, "dist [km]:           %g", idr->dist);
-//    CCTK_VInfo (CCTK_THORNSTRING, "dist_mass [km]:      %g", idr->dist_mass);
-//    CCTK_VInfo (CCTK_THORNSTRING, "mass1_b [M_sun]:     %g", idr->mass1_b);
-//    CCTK_VInfo (CCTK_THORNSTRING, "mass2_b [M_sun]:     %g", idr->mass2_b);
-//    CCTK_VInfo (CCTK_THORNSTRING, "mass_ADM [M_sun]:    %g", idr->mass_adm);
-//    CCTK_VInfo (CCTK_THORNSTRING, "L_tot [G M_sun^2/c]: %g", idr->angu_mom);
-//    CCTK_VInfo (CCTK_THORNSTRING, "rad1_x_comp [km]:    %g", idr->rad1_x_comp);
-//    CCTK_VInfo (CCTK_THORNSTRING, "rad1_y [km]:         %g", idr->rad1_y);
-//    CCTK_VInfo (CCTK_THORNSTRING, "rad1_z [km]:         %g", idr->rad1_z);
-//    CCTK_VInfo (CCTK_THORNSTRING, "rad1_x_opp [km]:     %g", idr->rad1_x_opp);
-//    CCTK_VInfo (CCTK_THORNSTRING, "rad2_x_comp [km]:    %g", idr->rad2_x_comp);
-//    CCTK_VInfo (CCTK_THORNSTRING, "rad2_y [km]:         %g", idr->rad2_y);
-//    CCTK_VInfo (CCTK_THORNSTRING, "rad2_z [km]:         %g", idr->rad2_z);
-//    CCTK_VInfo (CCTK_THORNSTRING, "rad2_x_opp [km]:     %g", idr->rad2_x_opp);
+    //BH properties
+    CCTK_REAL BH_Christodoulou_mass = idr->get_param_dbl("BH_Christodoulou_mass",idr);
+    CCTK_REAL BH_Komar_mass         = idr->get_param_dbl("BH_Komar_mass",idr);
+    CCTK_REAL BH_irr_mass           = idr->get_param_dbl("BH_irreducible_mass",idr);
+    CCTK_REAL BH_comx               = idr->get_param_dbl("BH_center_x",idr);
+    CCTK_REAL BH_comy               = idr->get_param_dbl("BH_center_y",idr);
+    CCTK_REAL BH_comz               = idr->get_param_dbl("BH_center_z",idr);
+    CCTK_REAL BH_spinx              = idr->get_param_dbl("BH_spin_x",idr);
+    CCTK_REAL BH_spiny              = idr->get_param_dbl("BH_spin_y",idr);
+    CCTK_REAL BH_spinz              = idr->get_param_dbl("BH_spin_z",idr);
+    CCTK_REAL BH_boostx             = idr->get_param_dbl("BH_boost_Vx",idr);
+    CCTK_REAL BH_boosty             = idr->get_param_dbl("BH_boost_Vy",idr);
+    CCTK_REAL BH_boostz             = idr->get_param_dbl("BH_boost_Vz",idr);
+   
+    //NS properties
+    CCTK_REAL NS_ADM_mass           = idr->get_param_dbl("NS_ADM_mass",idr);
+    CCTK_REAL NS_max_radius         = idr->get_param_dbl("NS_max_radius",idr);
+    CCTK_REAL NS_baryonic_mass      = idr->get_param_dbl("NS_baryonic_mass",idr);
+    CCTK_REAL NS_rho0_center        = idr->get_param_dbl("NS_rho0_center",idr);
+    CCTK_REAL NS_comx               = idr->get_param_dbl("NS_x_CM",idr);
+    CCTK_REAL NS_comy               = idr->get_param_dbl("NS_y_CM",idr);
+    CCTK_REAL NS_comz               = idr->get_param_dbl("NS_z_CM",idr);
+    CCTK_REAL NS_spinx              = idr->get_param_dbl("NS_spin_x",idr);
+    CCTK_REAL NS_spiny              = idr->get_param_dbl("NS_spin_y",idr);
+    CCTK_REAL NS_spinz              = idr->get_param_dbl("NS_spin_z",idr);
+    //CCTK_STRING NS_EoS_type         = idr->get_param_dbl("NS_EoS_type",idr);
+    //CCTK_STRING NS_EOS_name         = idr->get_param_dbl("NS_EoS_description",idr);
+    CCTK_REAL NS_K0                 = idr->get_param_dbl("NS_EoS_K0",idr);
+    CCTK_REAL NS_Gamma              = idr->get_param_dbl("NS_EoS_Gamma",idr);
+
+    //System properties
+    CCTK_REAL BHNS_Separation       = idr->get_param_dbl("BHNS_separation",idr);
+    CCTK_REAL BHNS_Mass_ratio       = idr->get_param_dbl("BHNS_mass_ratio (BH/NS)",idr);
+    CCTK_REAL BHNS_ADM_mass         = idr->get_param_dbl("BHNS_ADM_mass",idr);
+    CCTK_REAL BHNS_Komar_mass       = idr->get_param_dbl("BHNS_Komar_mass",idr);
+    CCTK_REAL BHNS_comx             = idr->get_param_dbl("BHNS_x_CM",idr);
+    CCTK_REAL BHNS_comy             = idr->get_param_dbl("BHNS_y_CM",idr);
+    CCTK_REAL BHNS_comz             = idr->get_param_dbl("BHNS_z_CM",idr);
+    CCTK_REAL BHNS_Omega            = idr->get_param_dbl("BHNS_angular_velocity",idr);
+    CCTK_VInfo (CCTK_THORNSTRING, "omega [rad/s]:         %g", BHNS_Omega);
+    CCTK_VInfo (CCTK_THORNSTRING, "dist [km]:             %g", BHNS_Separation);
+    CCTK_VInfo (CCTK_THORNSTRING, "mass ratio:            %g", BHNS_Mass_ratio);
+    CCTK_VInfo (CCTK_THORNSTRING, "Irr. mass BH [M_sun]:  %g", BH_irr_mass);
+    CCTK_VInfo (CCTK_THORNSTRING, "ADM mass NS [M_sun]:   %g", NS_ADM_mass);
+    CCTK_VInfo (CCTK_THORNSTRING, "ADM mass BHNS [M_sun]: %g", BHNS_ADM_mass);
     // TODO: reading EOS from Elliptica
     double K = 100.0; // make sure ths is in polytropic units
     double Gamma = 2.0; // make sure ths is in polytropic units
@@ -266,7 +290,7 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
     idr->x_coords = xx;
     idr->y_coords = yy;
     idr->z_coords = zz;
-    idr->set_param("BHNS_filler_method","ChebTn_Ylm_perfect_s2",idr);
+    idr->set_param("BHNS_filler_method",BH_filler_method,idr);
     idr->set_param("ADM_B1I_form","zero",idr);
     
     
@@ -304,9 +328,10 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
 
     if (CCTK_EQUALS(initial_data, "Elliptica_BHNS")) {
       rho[i] = idr->field[idr->indx("grhd_rho")][i];
+      //if using a realistic EOS, set the beta equilibrium conditions
       if(init_real){
       if(rho[i]>=1e-7){
-          double yeres = interp(log_rho0_tab_beta, Y_e_tab, n_tab_beta,log10(rho[i]), &n_nearest_beta);
+          double yeres = interploc(log_rho0_tab_betaloc, Y_e_tabloc, n_tab_betaloc,log10(rho[i]), &n_nearest_betaloc);
 	  if(yeres <=0.036){yeres = 0.036;} 
 	  Y_e[i] = yeres;
           temperature[i] = 0.1;
@@ -351,15 +376,12 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
   } // for i
 
   {
-    // Angular velocity
-    //CCTK_REAL const omega = idr->omega * cactusT;
-
     // These initial data assume a helical Killing vector field
 
     if (CCTK_EQUALS(initial_lapse, "Elliptica_BHNS")) { 
       if (CCTK_EQUALS (initial_dtlapse, "Elliptica_BHNS")) {
         CCTK_INFO ("Calculating time derivatives of lapse");
-        set_dt_from_domega (CCTK_PASS_CTOC, alp, dtalp, Omega);
+        set_dt_from_domega (CCTK_PASS_CTOC, alp, dtalp, BHNS_Omega);
       } else if (CCTK_EQUALS (initial_dtlapse, "none") or CCTK_EQUALS(initial_dtlapse,"zero")) {
         // do nothing
       } else {
@@ -370,9 +392,9 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
     if (CCTK_EQUALS(initial_shift, "Elliptica_BHNS")) { 
       if (CCTK_EQUALS (initial_dtshift, "Elliptica_BHNS")) {
         CCTK_INFO ("Calculating time derivatives of shift");
-        set_dt_from_domega (CCTK_PASS_CTOC, betax, dtbetax, Omega);
-        set_dt_from_domega (CCTK_PASS_CTOC, betay, dtbetay, Omega);
-        set_dt_from_domega (CCTK_PASS_CTOC, betaz, dtbetaz, Omega);
+        set_dt_from_domega (CCTK_PASS_CTOC, betax, dtbetax, BHNS_Omega);
+        set_dt_from_domega (CCTK_PASS_CTOC, betay, dtbetay, BHNS_Omega);
+        set_dt_from_domega (CCTK_PASS_CTOC, betaz, dtbetaz, BHNS_Omega);
       } else if (CCTK_EQUALS (initial_dtshift, "none") or CCTK_EQUALS(initial_dtshift,"zero")) {
         // do nothing
       } else {
@@ -381,16 +403,16 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
     }
   }
 
-  CCTK_INFO ("Done.");
-  } catch (ios::failure e) {
-    CCTK_VWarn (CCTK_WARN_ABORT, __LINE__, __FILE__, CCTK_THORNSTRING,
-                "Could not read initial data from file '%s': %s", filename, e.what());
-  }
-
   // free  
   elliptica_id_reader_free(idr);
   if (xx) free(xx);
   if (yy) free(yy);
   if (zz) free(zz);
+  CCTK_INFO ("Done.");
+  } catch (ios::failure e) {
+    CCTK_VWarn (CCTK_WARN_ABORT, __LINE__, __FILE__, CCTK_THORNSTRING,
+                "Could not read initial data from file '%s': %s", Elliptica_bhns_file, e.what());
+  }
+
 }
 

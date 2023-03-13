@@ -52,10 +52,20 @@ EXTENDS keyword initial_Y_e
 
 private:
 
-CCTK_STRING Elliptica_bns_file "File containing Elliptica initial data" STEERABLE=recover
+CCTK_STRING Elliptica_bhns_file "File containing Elliptica initial data" STEERABLE=recover
 {
   ".+" :: "Pathname"
-} "inif.d"
+} "checkpoint.dat"
+
+CCTK_STRING Elliptica_bhns_option "additional option for BHNS reader" STEERABLE=recover
+{
+  "" :: "option name"
+} "generic"
+
+CCTK_STRING BH_filler_method "Set the method for filling the BH" STEERABLE=recover
+{
+  "" :: "none, ChebTn_general_s2, expmr_C0_perfect_s2, r_expmr_C1_perfect_s2, expmr_C0_perfect_s2, r_expmr_C1_perfect_s2"
+} "ChebTn_Ylm_perfect_s2"
 
 STRING eos_table "Initial data EOS identifyer"
 {

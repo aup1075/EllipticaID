@@ -2,7 +2,7 @@
 # $Header:$
 
 IMPLEMENTS: Elliptica_BHNS
-INHERITS: grid SummationByParts ADMBase HydroBase EOS_Omni 
+INHERITS: grid SummationByParts ADMBase HydroBase EOS_Omni Elliptica_ID_Reader
 
 CCTK_REAL coords_uElliptica type = GF Timelevels = 1 tags='Prolongation = "None" checkpoint="no"'
 {
