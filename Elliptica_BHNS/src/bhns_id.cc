@@ -195,8 +195,10 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
     CCTK_INFO ("Entering Elliptica_BHNS_initialize");
   }
 
-  if(init_real){CCTK_INFO ("(with realistic EOS)"); load_beta_equilloc(beta_file, log_rho0_tab_betaloc, Y_e_tabloc, &n_tab_betaloc);}
-
+  if(init_real){
+    CCTK_INFO ("(with realistic EOS)"); 
+    load_beta_equilloc(beta_file, log_rho0_tab_betaloc, Y_e_tabloc, &n_tab_betaloc);
+    }
 
   // Other quantities in terms of Cactus units
   CCTK_INT keyerr = 0, anyerr = 0;
