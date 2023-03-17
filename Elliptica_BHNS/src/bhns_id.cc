@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <cassert>
 #include <cstdlib>
+
+/* @AVIRAL: isn't it better to include this .h file as part of this thorn ? */
 #include <elliptica_id_reader_lib.h>
 
 #define MAX_NTAB (16001)
@@ -123,7 +125,10 @@ void load_beta_equilloc( const char beta_equil_file[],
  CCTK_REAL const cactusM= (5.028916268544129e-34);    /*  1/g  */
  CCTK_REAL const cactusL= (6.772400341316594e-06);    /*  1/cm */
  CCTK_REAL const cactusT= (2.0303145448833407e5);    /*  1/s  */
+
+ /* @AVIRAL: Shouldn't the following be 1./cactusV ? */
  CCTK_REAL const cactusV= (1.0/(cactusL*cactusL*cactusL));
+
  double rho0,               /* density */
         ye;                /* electron fraction */
 
@@ -186,7 +191,10 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
     DECLARE_CCTK_ARGUMENTS;
     DECLARE_CCTK_PARAMETERS;
 
-  CCTK_INFO ("Setting up Elliptica BHNS initial data");
+  if(verbose){
+    CCTK_INFO ("Entering Elliptica_BHNS_initialize");
+  }
+
   if(init_real){CCTK_INFO ("(with realistic EOS)"); load_beta_equilloc(beta_file, log_rho0_tab_betaloc, Y_e_tabloc, &n_tab_betaloc);}
 
 
@@ -412,6 +420,10 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
   } catch (ios::failure e) {
     CCTK_VWarn (CCTK_WARN_ABORT, __LINE__, __FILE__, CCTK_THORNSTRING,
                 "Could not read initial data from file '%s': %s", Elliptica_bhns_file, e.what());
+  }
+
+  if(verbose){
+    CCTK_INFO("Exiting Elliptica_BHNS_initialize");
   }
 
 }

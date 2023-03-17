@@ -1,5 +1,7 @@
 # Schedule definitions for thorn Elliptica_BHNS
 
+# @AVIRAL: Shouldn't we impose && instead of || ? 
+
 if (CCTK_EQUALS (initial_data,    "Elliptica_BHNS") ||
     CCTK_EQUALS (initial_lapse,   "Elliptica_BHNS") ||
     CCTK_EQUALS (initial_shift,   "Elliptica_BHNS") ||

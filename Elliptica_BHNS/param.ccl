@@ -52,6 +52,10 @@ EXTENDS keyword initial_Y_e
 
 private:
 
+BOOLEAN verbose "Flags a message upon entry to and exit from a subroutine"
+{
+} "yes"
+
 CCTK_STRING Elliptica_bhns_file "File containing Elliptica initial data" STEERABLE=recover
 {
   ".+" :: "Pathname"
