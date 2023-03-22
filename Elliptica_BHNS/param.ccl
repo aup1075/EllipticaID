@@ -98,3 +98,14 @@ CCTK_REAL eos_precision "precision of EOS calculations in EOSOmni"
 {
   0:* :: "any positive number"
 } 1.e-8
+
+CCTK_REAL K_elliptica "Kappa of a single polytrope"
+{
+  0:* :: "any positive number"
+} 100
+
+CCTK_REAL Gamma_elliptica "exponent of a single polytope"
+{
+  0:* :: "any positive number"
+} 2
+

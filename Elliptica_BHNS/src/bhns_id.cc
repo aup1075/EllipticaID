@@ -297,8 +297,8 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
 //    CCTK_VInfo (CCTK_THORNSTRING, "ADM mass BHNS [M_sun]: %g", BHNS_ADM_mass);
     CCTK_REAL BHNS_Omega            = 0.003678125155199;
     // TODO: reading EOS from Elliptica
-    double K = 100.0; // make sure ths is in polytropic units
-    double Gamma = 2.0; // make sure ths is in polytropic units
+    double K = K_elliptica; // make sure ths is in polytropic units
+    double Gamma = Gamma_elliptica; // make sure ths is in polytropic units
     CCTK_VInfo (CCTK_THORNSTRING, "Here22");
     idr->ifields = "alpha,betax,betay,betaz,adm_gxx,adm_gxy,adm_gxz,adm_gyy,adm_gyz,adm_gzz,adm_Kxx,adm_Kxy,adm_Kxz,adm_Kyy,adm_Kyz,adm_Kzz,grhd_rho,grhd_epsl,grhd_vx,grhd_vy,grhd_vz";
     idr->npoints = N_points;
