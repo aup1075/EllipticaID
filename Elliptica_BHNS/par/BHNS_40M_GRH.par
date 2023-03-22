@@ -121,7 +121,7 @@ CarpetRegrid2::num_centres  = 3
 
 CarpetRegrid2::num_levels_1 = 7
 CarpetRegrid2::num_levels_2 = 7
-CarpetRegrid2::num_levels_3 = 7
+CarpetRegrid2::num_levels_3 = 6
 
 CarpetRegrid2::position_y_1              = 0    #first grid is for merger site
 CarpetRegrid2::position_y_2              = -70  #second grid is for NS
