@@ -288,14 +288,14 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
 //    CCTK_REAL BHNS_comx             = idr->get_param_dbl("BHNS_x_CM",idr);
 //    CCTK_REAL BHNS_comy             = idr->get_param_dbl("BHNS_y_CM",idr);
 //    CCTK_REAL BHNS_comz             = idr->get_param_dbl("BHNS_z_CM",idr);
-//    CCTK_REAL BHNS_Omega            = idr->get_param_dbl("BHNS_angular_velocity",idr);
+    CCTK_REAL BHNS_Omega            = idr->get_param_dbl("BHNS_angular_velocity",idr);
 //    CCTK_VInfo (CCTK_THORNSTRING, "omega [rad/s]:         %g", BHNS_Omega);
 //    CCTK_VInfo (CCTK_THORNSTRING, "dist [km]:             %g", BHNS_Separation);
 //    CCTK_VInfo (CCTK_THORNSTRING, "mass ratio:            %g", BHNS_Mass_ratio);
 //    CCTK_VInfo (CCTK_THORNSTRING, "Irr. mass BH [M_sun]:  %g", BH_irr_mass);
 //    CCTK_VInfo (CCTK_THORNSTRING, "ADM mass NS [M_sun]:   %g", NS_ADM_mass);
 //    CCTK_VInfo (CCTK_THORNSTRING, "ADM mass BHNS [M_sun]: %g", BHNS_ADM_mass);
-    CCTK_REAL BHNS_Omega            = 0.003678125155199;
+//    CCTK_REAL BHNS_Omega            = 0.003678125155199;
     // TODO: reading EOS from Elliptica
     double K = poly_K; // make sure ths is in polytropic units
     double Gamma = poly_gamma; // make sure ths is in polytropic units
