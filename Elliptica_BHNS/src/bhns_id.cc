@@ -237,54 +237,7 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
   try {
     CCTK_VInfo (CCTK_THORNSTRING, "Calling Elliptica_ID_Reader_T");
     Elliptica_ID_Reader_T *idr = elliptica_id_reader_init(Elliptica_bhns_file,Elliptica_bhns_option);
-    //Print some scalar values from idr
-    //BH properties
-//    CCTK_REAL BH_Christodoulou_mass = idr->get_param_dbl("BH_Christodoulou_mass",idr);
-//    CCTK_REAL BH_Komar_mass         = idr->get_param_dbl("BH_Komar_mass",idr);
-//    CCTK_REAL BH_irr_mass           = idr->get_param_dbl("BH_irreducible_mass",idr);
-//    CCTK_REAL BH_comx               = idr->get_param_dbl("BH_center_x",idr);
-//    CCTK_REAL BH_comy               = idr->get_param_dbl("BH_center_y",idr);
-//    CCTK_REAL BH_comz               = idr->get_param_dbl("BH_center_z",idr);
-//    CCTK_REAL BH_spinx              = idr->get_param_dbl("BH_spin_x",idr);
-//    CCTK_REAL BH_spiny              = idr->get_param_dbl("BH_spin_y",idr);
-//    CCTK_REAL BH_spinz              = idr->get_param_dbl("BH_spin_z",idr);
-//    CCTK_REAL BH_boostx             = idr->get_param_dbl("BH_boost_Vx",idr);
-//    CCTK_REAL BH_boosty             = idr->get_param_dbl("BH_boost_Vy",idr);
-//    CCTK_REAL BH_boostz             = idr->get_param_dbl("BH_boost_Vz",idr);
-//   
-//    //NS properties
-//    CCTK_REAL NS_ADM_mass           = idr->get_param_dbl("NS_ADM_mass",idr);
-//    CCTK_REAL NS_max_radius         = idr->get_param_dbl("NS_max_radius",idr);
-//    CCTK_REAL NS_baryonic_mass      = idr->get_param_dbl("NS_baryonic_mass",idr);
-//    CCTK_REAL NS_rho0_center        = idr->get_param_dbl("NS_rho0_center",idr);
-//    CCTK_REAL NS_comx               = idr->get_param_dbl("NS_x_CM",idr);
-//    CCTK_REAL NS_comy               = idr->get_param_dbl("NS_y_CM",idr);
-//    CCTK_REAL NS_comz               = idr->get_param_dbl("NS_z_CM",idr);
-//    CCTK_REAL NS_spinx              = idr->get_param_dbl("NS_spin_x",idr);
-//    CCTK_REAL NS_spiny              = idr->get_param_dbl("NS_spin_y",idr);
-//    CCTK_REAL NS_spinz              = idr->get_param_dbl("NS_spin_z",idr);
-//    //CCTK_STRING NS_EoS_type         = idr->get_param_dbl("NS_EoS_type",idr);
-//    //CCTK_STRING NS_EOS_name         = idr->get_param_dbl("NS_EoS_description",idr);
-//    CCTK_REAL NS_K0                 = idr->get_param_dbl("NS_EoS_K0",idr);
-//    CCTK_REAL NS_Gamma              = idr->get_param_dbl("NS_EoS_Gamma",idr);
-//
-//    //System properties
-//    CCTK_REAL BHNS_Separation       = idr->get_param_dbl("BHNS_separation",idr);
-//    CCTK_REAL BHNS_Mass_ratio       = idr->get_param_dbl("BHNS_mass_ratio (BH/NS)",idr);
-//    CCTK_REAL BHNS_ADM_mass         = idr->get_param_dbl("BHNS_ADM_mass",idr);
-//    CCTK_REAL BHNS_Komar_mass       = idr->get_param_dbl("BHNS_Komar_mass",idr);
-//    CCTK_REAL BHNS_comx             = idr->get_param_dbl("BHNS_x_CM",idr);
-//    CCTK_REAL BHNS_comy             = idr->get_param_dbl("BHNS_y_CM",idr);
-//    CCTK_REAL BHNS_comz             = idr->get_param_dbl("BHNS_z_CM",idr);
     CCTK_REAL BHNS_Omega            = idr->get_param_dbl("BHNS_angular_velocity",idr);
-//    CCTK_VInfo (CCTK_THORNSTRING, "omega [rad/s]:         %g", BHNS_Omega);
-//    CCTK_VInfo (CCTK_THORNSTRING, "dist [km]:             %g", BHNS_Separation);
-//    CCTK_VInfo (CCTK_THORNSTRING, "mass ratio:            %g", BHNS_Mass_ratio);
-//    CCTK_VInfo (CCTK_THORNSTRING, "Irr. mass BH [M_sun]:  %g", BH_irr_mass);
-//    CCTK_VInfo (CCTK_THORNSTRING, "ADM mass NS [M_sun]:   %g", NS_ADM_mass);
-//    CCTK_VInfo (CCTK_THORNSTRING, "ADM mass BHNS [M_sun]: %g", BHNS_ADM_mass);
-//    CCTK_REAL BHNS_Omega            = 0.003678125155199;
-    // TODO: reading EOS from Elliptica
     CCTK_REAL K = poly_K; // make sure ths is in polytropic units
     CCTK_REAL Gamma = poly_gamma; // make sure ths is in polytropic units
     idr->ifields = "alpha,betax,betay,betaz,adm_gxx,adm_gxy,adm_gxz,adm_gyy,adm_gyz,adm_gzz,adm_Kxx,adm_Kxy,adm_Kxz,adm_Kyy,adm_Kyz,adm_Kzz,grhd_rho,grhd_epsl,grhd_vx,grhd_vy,grhd_vz";
