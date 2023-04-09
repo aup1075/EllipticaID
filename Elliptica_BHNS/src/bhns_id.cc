@@ -237,11 +237,9 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
   try {
     CCTK_VInfo (CCTK_THORNSTRING, "Calling Elliptica_ID_Reader_T");
     Elliptica_ID_Reader_T *idr = elliptica_id_reader_init(Elliptica_bhns_file,Elliptica_bhns_option);
-    CCTK_VInfo (CCTK_THORNSTRING, "Here1");
     //Print some scalar values from idr
     //BH properties
 //    CCTK_REAL BH_Christodoulou_mass = idr->get_param_dbl("BH_Christodoulou_mass",idr);
-//    CCTK_VInfo (CCTK_THORNSTRING, "Here2");
 //    CCTK_REAL BH_Komar_mass         = idr->get_param_dbl("BH_Komar_mass",idr);
 //    CCTK_REAL BH_irr_mass           = idr->get_param_dbl("BH_irreducible_mass",idr);
 //    CCTK_REAL BH_comx               = idr->get_param_dbl("BH_center_x",idr);
@@ -289,7 +287,6 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
     // TODO: reading EOS from Elliptica
     CCTK_REAL K = poly_K; // make sure ths is in polytropic units
     CCTK_REAL Gamma = poly_gamma; // make sure ths is in polytropic units
-    CCTK_VInfo (CCTK_THORNSTRING, "Here22");
     idr->ifields = "alpha,betax,betay,betaz,adm_gxx,adm_gxy,adm_gxz,adm_gyy,adm_gyz,adm_gzz,adm_Kxx,adm_Kxy,adm_Kxz,adm_Kyy,adm_Kyz,adm_Kzz,grhd_rho,grhd_epsl,grhd_vx,grhd_vy,grhd_vz";
     idr->npoints = N_points;
     idr->x_coords = xx;
