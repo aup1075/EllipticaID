@@ -119,14 +119,6 @@ static void load_beta_equilloc( const char beta_equil_file[],
 {
  CCTK_INT i;                    /* counter */
 
- /*constants to convert from cgs to cactus units c=G=M_sun=1.0 */
- CCTK_REAL const cactusM= (5.028916268544129e-34);    /*  1/g  */
- CCTK_REAL const cactusL= (6.772400341316594e-06);    /*  1/cm */
- CCTK_REAL const cactusT= (2.0303145448833407e5);    /*  1/s  */
-
- /* @AVIRAL: Shouldn't the following be 1./cactusV ? */
- CCTK_REAL const cactusV= (1.0/(cactusL*cactusL*cactusL));
-
  CCTK_REAL rho0,               /* density */
         ye;                /* electron fraction */
 
