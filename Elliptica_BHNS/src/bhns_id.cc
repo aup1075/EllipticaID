@@ -25,9 +25,9 @@ using namespace std;
 /***************************************************************************/
 /* Routine that locates nearest grid point for a given value.              */
 /***************************************************************************/
-static void huntloc(double xx[], int n, double x, int *jlo)
+static void huntloc(CCTK_REAL xx[], CCTK_INT n, CCTK_REAL x, CCTK_INT *jlo)
 { 
-	int jm,jhi,inc,ascnd;
+	CCTK_INT jm,jhi,inc,ascnd;
 
 	ascnd=(xx[n] > xx[1]);
 	if (*jlo <= 0 || *jlo > n) {
@@ -77,16 +77,16 @@ static void huntloc(double xx[], int n, double x, int *jlo)
 /* Driver for the interpolation routine. First we find the tab. point    */
 /* nearest to xb, then we interpolate using four points around xb.       */  
 /*************************************************************************/
-static double interploc(double xp[], 
-              double yp[], 
-              int    np ,
-              double xb, 
-              int    *n_nearest_pt)
+static CCTK_REAL interploc(CCTK_REAL xp[], 
+              CCTK_REAL yp[], 
+              CCTK_INT    np ,
+              CCTK_REAL xb, 
+              CCTK_INT    *n_nearest_pt)
 { 
- int k,        /* index of 1st point */
+ CCTK_INT k,        /* index of 1st point */
      m=4;      /* degree of interpolation */ 
  
- double y;     /* intermediate value */
+ CCTK_REAL y;     /* intermediate value */
 
  huntloc(xp,np,xb,n_nearest_pt);
 
@@ -113,11 +113,11 @@ static double interploc(double xp[],
 /* Load Beta equil file.                                                        */
 /*************************************************************************/
 static void load_beta_equilloc( const char beta_equil_file[],
-               double log_rho0_table[MAX_NTAB],
-               double Y_e_table[MAX_NTAB],
-               int *n_tab_betaloc)
+               CCTK_REAL log_rho0_table[MAX_NTAB],
+               CCTK_REAL Y_e_table[MAX_NTAB],
+               CCTK_INT *n_tab_betaloc)
 {
- int i;                    /* counter */
+ CCTK_INT i;                    /* counter */
 
  /*constants to convert from cgs to cactus units c=G=M_sun=1.0 */
  CCTK_REAL const cactusM= (5.028916268544129e-34);    /*  1/g  */
@@ -127,7 +127,7 @@ static void load_beta_equilloc( const char beta_equil_file[],
  /* @AVIRAL: Shouldn't the following be 1./cactusV ? */
  CCTK_REAL const cactusV= (1.0/(cactusL*cactusL*cactusL));
 
- double rho0,               /* density */
+ CCTK_REAL rho0,               /* density */
         ye;                /* electron fraction */
 
  FILE *f_beta;              /* pointer to beta_equil_file */
@@ -158,9 +158,9 @@ static void load_beta_equilloc( const char beta_equil_file[],
 }
 
 // Auxiliary variables for interepolating Beta equilibrium table
-static int n_tab_betaloc;
-static double Y_e_tabloc[MAX_NTAB], log_rho0_tab_betaloc[MAX_NTAB];
-static int n_nearest_betaloc;
+static CCTK_INT n_tab_betaloc;
+static CCTK_REAL Y_e_tabloc[MAX_NTAB], log_rho0_tab_betaloc[MAX_NTAB];
+static CCTK_INT n_nearest_betaloc;
 
 static void set_dt_from_domega (CCTK_ARGUMENTS,
                                 CCTK_REAL const* const var,
@@ -169,14 +169,14 @@ static void set_dt_from_domega (CCTK_ARGUMENTS,
 {
   DECLARE_CCTK_ARGUMENTS;
 
-  int const npoints = cctk_lsh[0] * cctk_lsh[1] * cctk_lsh[2];
+  CCTK_INT const npoints = cctk_lsh[0] * cctk_lsh[1] * cctk_lsh[2];
   vector<CCTK_REAL> dxvar(npoints), dyvar(npoints);
 
   Diff_gv (cctkGH, 0, var, &dxvar[0], -1);
   Diff_gv (cctkGH, 1, var, &dyvar[0], -1);
 
 #pragma omp parallel for
-  for (int i=0; i<npoints; ++i) {
+  for (CCTK_INT i=0; i<npoints; ++i) {
     CCTK_REAL const ephix = +y[i];
     CCTK_REAL const ephiy = -x[i];
     CCTK_REAL const dphi_var = ephix * dxvar[i] + ephiy * dyvar[i];
@@ -209,13 +209,13 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
 
   //Set up local coordinate arrays
   CCTK_INFO ("Setting up coordinates");
-  int const N_points = cctk_lsh[0] * cctk_lsh[1] * cctk_lsh[2];
-  double *xx = (double *)calloc(N_points,sizeof(*xx)); assert(xx);
-  double *yy = (double *)calloc(N_points,sizeof(*yy)); assert(yy);
-  double *zz = (double *)calloc(N_points,sizeof(*zz)); assert(zz);
+  CCTK_INT const N_points = cctk_lsh[0] * cctk_lsh[1] * cctk_lsh[2];
+  CCTK_REAL *xx = (CCTK_REAL *)calloc(N_points,sizeof(*xx)); assert(xx);
+  CCTK_REAL *yy = (CCTK_REAL *)calloc(N_points,sizeof(*yy)); assert(yy);
+  CCTK_REAL *zz = (CCTK_REAL *)calloc(N_points,sizeof(*zz)); assert(zz);
   
 #pragma omp parallel for
-  for (int i=0; i<N_points; ++i) {
+  for (CCTK_INT i=0; i<N_points; ++i) {
     xx[i] = x[i];
     yy[i] = y[i];
     zz[i] = z[i];
@@ -295,8 +295,8 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
 //    CCTK_VInfo (CCTK_THORNSTRING, "ADM mass BHNS [M_sun]: %g", BHNS_ADM_mass);
 //    CCTK_REAL BHNS_Omega            = 0.003678125155199;
     // TODO: reading EOS from Elliptica
-    double K = poly_K; // make sure ths is in polytropic units
-    double Gamma = poly_gamma; // make sure ths is in polytropic units
+    CCTK_REAL K = poly_K; // make sure ths is in polytropic units
+    CCTK_REAL Gamma = poly_gamma; // make sure ths is in polytropic units
     CCTK_VInfo (CCTK_THORNSTRING, "Here22");
     idr->ifields = "alpha,betax,betay,betaz,adm_gxx,adm_gxy,adm_gxz,adm_gyy,adm_gyz,adm_gzz,adm_Kxx,adm_Kxy,adm_Kxz,adm_Kyy,adm_Kyz,adm_Kzz,grhd_rho,grhd_epsl,grhd_vx,grhd_vy,grhd_vz";
     idr->npoints = N_points;
@@ -310,7 +310,7 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
     elliptica_id_reader_interpolate(idr);
 
 #pragma omp parallel for
-  for (int i=0; i<N_points; ++i) {
+  for (CCTK_INT i=0; i<N_points; ++i) {
 
     if (CCTK_EQUALS(initial_lapse, "Elliptica_BHNS")) { 
       alp[i] = idr->field[idr->indx("alpha")][i];
@@ -344,7 +344,7 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
       //if using a realistic EOS, set the beta equilibrium conditions
       if(init_real){
       if(rho[i]>=1e-7){
-          double yeres = interploc(log_rho0_tab_betaloc, Y_e_tabloc, n_tab_betaloc,log10(rho[i]), &n_nearest_betaloc);
+          CCTK_REAL yeres = interploc(log_rho0_tab_betaloc, Y_e_tabloc, n_tab_betaloc,log10(rho[i]), &n_nearest_betaloc);
 	  if(yeres <=0.036){yeres = 0.036;} 
 	  Y_e[i] = yeres;
           temperature[i] = 0.1;
