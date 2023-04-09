@@ -1,8 +1,7 @@
 # Parameter definitions for the thorn EllipticaID
-# $Header:$
-
 
 shares: IO
+
 USES CCTK_STRING out_dir
 
 shares: ADMBase
@@ -48,14 +47,28 @@ EXTENDS keyword initial_Y_e
   "Elliptica_BHNS" :: "BHNS Initial Y_e from Elliptica"
 }
 
-#shares:PizzaIDBase
-
 private:
 
-CCTK_STRING Elliptica_bns_file "File containing Elliptica initial data" STEERABLE=recover
+BOOLEAN verbose "Flags a message upon entry to and exit from a subroutine"
+{
+} "yes"
+
+CCTK_STRING Elliptica_bhns_file "File containing Elliptica initial data" STEERABLE=recover
 {
   ".+" :: "Pathname"
-} "inif.d"
+} "checkpoint.dat"
+
+CCTK_STRING Elliptica_bhns_option "additional option for BHNS reader" STEERABLE=recover
+{
+  "generic" :: "entails generic assumptions to interpolate fields "
+} "generic"
+
+CCTK_STRING BH_filler_method "Set the method for filling the BH" STEERABLE=recover
+{
+  "none"                  :: "no filling"
+  "ChebTn_Ylm_perfect_s2" :: "fill excised BH with data demanding C2 continuity for perfect S2"
+  "ChebTn_general_s2"     :: "fill excised BH with data demanding C2 continuity for general S2"
+} "ChebTn_Ylm_perfect_s2"
 
 STRING eos_table "Initial data EOS identifyer"
 {
@@ -64,14 +77,34 @@ STRING eos_table "Initial data EOS identifyer"
 
 STRING eos_table_filepath "Directory containing the EOS file used to generate the initial data"
 {
-  "" :: "Directory name, default (empty string) is 'do not tell Lorene to overwrite info found in Lorene data'"
+  "" :: "Directory name, default (empty string) is 'do not tell Lorene to overwrite info found in Lorene TODO?'"
 } ""
 
 STRING beta_file "Directory containing the beta-equilibrium Ye(rho) function -- rho is in cgs"
 {
-  "" :: "Directory name, default (empty string) is 'do not tell Lorene to overwrite info found in Lorene data'"
+  "" :: "Directory name, default (empty string) is 'do not tell Lorene to overwrite info found in Lorene data TODO?'"
 } ""
 
 BOOLEAN init_real "are you initializing realistic ID?"
 {
 } "no"
+
+BOOLEAN recalculate_eps "Should eps be recalculated (default), or taken from Lorene data? TODO?"
+{
+} "yes"
+
+CCTK_REAL eos_precision "precision of EOS calculations in EOSOmni"
+{
+  0:* :: "any positive number"
+} 1.e-8
+
+CCTK_REAL poly_K "Kappa of a single polytrope"
+{
+  0:* :: "any positive number"
+} 100
+
+CCTK_REAL poly_gamma "exponent of a single polytope"
+{
+  0:* :: "any positive number"
+} 2
+

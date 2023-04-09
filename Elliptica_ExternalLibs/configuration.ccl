@@ -1,7 +1,0 @@
-# Configuration definitions for thorn Elliptica_ExternalLibs
-PROVIDES Elliptica_ExternalLibs
-{
-  SCRIPT 
-  LANG 
-}
-

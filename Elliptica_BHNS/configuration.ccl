@@ -1,3 +1,8 @@
-# Configuration definition for thorn Meudon_Bin_NS
+# Configuration definition for thorn Elliptica BHNS ID
 
-REQUIRES EIDR
+PROVIDES Elliptica_BHNS
+{
+  SCRIPT src/build.sh
+  LANG bash
+}
+REQUIRES Elliptica_ID_Reader
