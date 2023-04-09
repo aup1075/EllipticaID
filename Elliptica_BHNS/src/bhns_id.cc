@@ -178,8 +178,8 @@ static void set_dt_from_domega (CCTK_ARGUMENTS,
 
 void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
 {
-    DECLARE_CCTK_ARGUMENTS;
-    DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+  DECLARE_CCTK_PARAMETERS;
 
   if(verbose){
     CCTK_INFO ("Entering Elliptica_BHNS_initialize");
@@ -188,7 +188,7 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
   if(init_real){
     CCTK_INFO ("(with realistic EOS)"); 
     load_beta_equilloc(beta_file, log_rho0_tab_betaloc, Y_e_tabloc, &n_tab_betaloc);
-    }
+  }
 
   // Other quantities in terms of Cactus units
   CCTK_INT keyerr = 0, anyerr = 0;
@@ -360,9 +360,6 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
 
   // free  
   elliptica_id_reader_free(idr);
-  if (xx) free(xx);
-  if (yy) free(yy);
-  if (zz) free(zz);
   CCTK_INFO ("Done.");
   } catch (ios::failure e) {
     CCTK_VWarn (CCTK_WARN_ABORT, __LINE__, __FILE__, CCTK_THORNSTRING,
@@ -372,6 +369,9 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
   if(verbose){
     CCTK_INFO("Exiting Elliptica_BHNS_initialize");
   }
-
+  
+  if (xx) free(xx);
+  if (yy) free(yy);
+  if (zz) free(zz);
 }
 
