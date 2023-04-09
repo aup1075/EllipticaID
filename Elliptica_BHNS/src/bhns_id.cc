@@ -22,12 +22,10 @@
 
 using namespace std;
 
-//TODO: MOVE THESE FUNCTIONS TO LOCAL SCOPE (same for Meudon)
-/*C*/
 /***************************************************************************/
 /* Routine that locates nearest grid point for a given value.              */
 /***************************************************************************/
-void huntloc(double xx[], int n, double x, int *jlo)
+static void huntloc(double xx[], int n, double x, int *jlo)
 { 
 	int jm,jhi,inc,ascnd;
 
@@ -79,7 +77,7 @@ void huntloc(double xx[], int n, double x, int *jlo)
 /* Driver for the interpolation routine. First we find the tab. point    */
 /* nearest to xb, then we interpolate using four points around xb.       */  
 /*************************************************************************/
-double interploc(double xp[], 
+static double interploc(double xp[], 
               double yp[], 
               int    np ,
               double xb, 
@@ -114,7 +112,7 @@ double interploc(double xp[],
 /*************************************************************************/
 /* Load Beta equil file.                                                        */
 /*************************************************************************/
-void load_beta_equilloc( const char beta_equil_file[],
+static void load_beta_equilloc( const char beta_equil_file[],
                double log_rho0_table[MAX_NTAB],
                double Y_e_table[MAX_NTAB],
                int *n_tab_betaloc)
@@ -159,10 +157,10 @@ void load_beta_equilloc( const char beta_equil_file[],
     }
 }
 
-//Auxiliary variables for interepolating Beta equilibrium table
-int n_tab_betaloc;
-double Y_e_tabloc[MAX_NTAB], log_rho0_tab_betaloc[MAX_NTAB];
-int n_nearest_betaloc;
+// Auxiliary variables for interepolating Beta equilibrium table
+static int n_tab_betaloc;
+static double Y_e_tabloc[MAX_NTAB], log_rho0_tab_betaloc[MAX_NTAB];
+static int n_nearest_betaloc;
 
 static void set_dt_from_domega (CCTK_ARGUMENTS,
                                 CCTK_REAL const* const var,
