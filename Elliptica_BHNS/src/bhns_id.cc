@@ -7,8 +7,6 @@
 #include <stdio.h>
 #include <cassert>
 #include <cstdlib>
-
-/* @AVIRAL: isn't it better to include this .h file as part of this thorn ? */
 #include <elliptica_id_reader_lib.h>
 
 #define MAX_NTAB (16001)
