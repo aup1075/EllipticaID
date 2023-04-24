@@ -4,16 +4,16 @@
 IMPLEMENTS: Elliptica_BHNS
 INHERITS: grid SummationByParts ADMBase HydroBase EOS_Omni Elliptica_ID_Reader
 
-CCTK_REAL coords_uElliptica type = GF Timelevels = 1 tags='Prolongation = "None" checkpoint="no"'
+CCTK_REAL coords_uElliptica type = GF Timelevels = 1 tags='Prolongation = "None" checkpoint = "no"'
 {
   x_uElliptica, y_uElliptica, z_uElliptica
 } "coordinates in Elliptica units"
 
-CCTK_REAL bhns_parameters TYPE=SCALAR
+CCTK_REAL bhns_parameters TYPE = SCALAR
 {
   Elliptica_bhns_omega
   Elliptica_bhns_separation
-} "Elliptica BNNS solution parameters"
+} "Elliptica BHNS solution parameters"
 
 SUBROUTINE Diff_gv (CCTK_POINTER_TO_CONST IN cctkGH, \
                     CCTK_INT IN dir, \

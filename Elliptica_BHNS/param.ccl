@@ -1,8 +1,7 @@
 # Parameter definitions for the thorn EllipticaID
-# $Header:$
-
 
 shares: IO
+
 USES CCTK_STRING out_dir
 
 shares: ADMBase
@@ -48,8 +47,6 @@ EXTENDS keyword initial_Y_e
   "Elliptica_BHNS" :: "BHNS Initial Y_e from Elliptica"
 }
 
-#shares:PizzaIDBase
-
 private:
 
 BOOLEAN verbose "Flags a message upon entry to and exit from a subroutine"
@@ -63,12 +60,14 @@ CCTK_STRING Elliptica_bhns_file "File containing Elliptica initial data" STEERAB
 
 CCTK_STRING Elliptica_bhns_option "additional option for BHNS reader" STEERABLE=recover
 {
-  "" :: "option name"
+  "generic" :: "entails generic assumptions to interpolate fields "
 } "generic"
 
 CCTK_STRING BH_filler_method "Set the method for filling the BH" STEERABLE=recover
 {
-  "" :: "none, ChebTn_general_s2, expmr_C0_perfect_s2, r_expmr_C1_perfect_s2, expmr_C0_perfect_s2, r_expmr_C1_perfect_s2"
+  "none"                  :: "no filling"
+  "ChebTn_Ylm_perfect_s2" :: "fill excised BH with data demanding C2 continuity for perfect S2"
+  "ChebTn_general_s2"     :: "fill excised BH with data demanding C2 continuity for general S2"
 } "ChebTn_Ylm_perfect_s2"
 
 STRING eos_table "Initial data EOS identifyer"

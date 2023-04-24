@@ -4,6 +4,5 @@ PROVIDES Elliptica_BHNS
 {
   SCRIPT src/build.sh
   LANG bash
-  OPTIONS 
 }
 REQUIRES Elliptica_ID_Reader
