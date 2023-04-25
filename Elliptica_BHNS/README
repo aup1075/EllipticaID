@@ -1,8 +1,40 @@
-# EllipticaID
-An initial data reader in CACTUS Framework for the Elliptica code, for BHNS systems 
-on BHNS branch
+Cactus Code Thorn Elliptica_BHNS
+Author(s)     : Pedro Espino (pespino@berkeley.edu)
+		Aviral Prakash (aup1075@psu.edu)
+		Alireza Rashti (akr6170@psu.edu)
+Licence       : GPLv3
+--------------------------------------------------------------------------
 
-Authors: Alireza Rashti (akr6170@psu.edu)
-         Aviral Prakash (aup1075@psu.edu)
-         Pedro Espino (pespino@berkeley.edu)
+==========================================================================
+1. Purpose
+==========================================================================
 
+Elliptica_BHNS imports the Elliptica BHNS ID to Einstein Toolkit.
+
+
+==========================================================================
+2. Usage
+==========================================================================
+
+Some of the parameters to be set to read the Elliptica BHNS ID
+
+-Spacetime evolution
+
+ADMBase::initial_data            = "Elliptica_BHNS"
+
+-Hydrodynamical evolution
+
+HydroBase::initial_hydro         = "Elliptica_BHNS"
+
+
+==========================================================================
+3. Required Citation
+==========================================================================
+
+a. Elliptica code paper
+
+Phys.Rev.D (2022) 105, 104027 (https://arxiv.org/abs/2109.14511)
+
+
+
+	
