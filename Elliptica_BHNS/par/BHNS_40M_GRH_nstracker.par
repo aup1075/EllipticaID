@@ -494,7 +494,7 @@ IOBasic::outInfo_vars  = "Carpet::physical_time_per_hour HydroBase::rho HydroBas
 
 CarpetIOScalar::outScalar_reductions = "maximum norm2 minimum"
 CarpetIOScalar::one_file_per_group = no
-IOScalar::outScalar_vars     = "HydroBase::rho HydroBase::press HydroBase::vel ML_BSSN::ML_Ham StaticConformal::confac ML_BSSN::ML_Mom ADMBase::lapse ADMBase::shift"
+IOScalar::outScalar_vars     = "HydroBase::rho HydroBase::press HydroBase::vel ML_BSSN::ML_Ham ML_BSSN::phi ML_BSSN::ML_Mom ADMBase::lapse ADMBase::shift"
 
 IOASCII::out0D_vars		= "PunctureTracker::pt_loc_x[0] PunctureTracker::pt_loc_y[0] PunctureTracker::pt_loc_z[0] Hydro_Analysis::Hydro_Analysis_rho_max_loc"
 
@@ -502,15 +502,15 @@ IOASCII::out1D_x = no
 IOASCII::out1D_y = no
 IOASCII::out1D_z = no  
 IOASCII::out1D_d = no  
-IOASCII::out1D_vars         = "HydroBase::rho HydroBase::press HydroBase::vel ML_BSSN::ML_Ham StaticConformal::confac ML_BSSN::ML_Mom ADMBase::curv ADMBase::metric ADMBase::lapse ADMBase::shift"
+IOASCII::out1D_vars         = "HydroBase::rho HydroBase::press HydroBase::vel ML_BSSN::ML_Ham ML_BSSN::phi ML_BSSN::ML_Mom ADMBase::curv ADMBase::metric ADMBase::lapse ADMBase::shift"
 
 IOHDF5::out1D_x = yes
 IOHDF5::out1D_y = no
 IOHDF5::out1D_z = no  
 IOHDF5::out1D_d = no  
-IOHDF5::out1D_vars         = "HydroBase::rho HydroBase::press HydroBase::vel ML_BSSN::ML_Ham StaticConformal::confac ML_BSSN::ML_Mom ADMBase::curv ADMBase::metric ADMBase::lapse ADMBase::shift"
+IOHDF5::out1D_vars         = "HydroBase::rho HydroBase::press HydroBase::vel ML_BSSN::ML_Ham ML_BSSN::phi ML_BSSN::ML_Mom ADMBase::curv ADMBase::metric ADMBase::lapse ADMBase::shift"
 
 IOHDF5::out2D_xy = yes
 IOHDF5::out2D_yz = no
 IOHDF5::out2D_xz = no 
-IOHDF5::out2D_vars         = "HydroBase::rho HydroBase::press HydroBase::vel ML_BSSN::ML_Ham StaticConformal::confac ML_BSSN::ML_Mom ADMBase::curv ADMBase::metric ADMBase::lapse ADMBase::shift"
+IOHDF5::out2D_vars         = "HydroBase::rho HydroBase::press HydroBase::vel ML_BSSN::ML_Ham ML_BSSN::phi ML_BSSN::ML_Mom ADMBase::curv ADMBase::metric ADMBase::lapse ADMBase::shift"
