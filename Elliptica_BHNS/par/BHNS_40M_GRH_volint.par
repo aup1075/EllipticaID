@@ -38,9 +38,9 @@ NaNChecker::action_if_found   =  "terminate"
 # Run parameters:
 #------------------------------------------------------------------------------
 
-#------
+################################################################################
 # Grid:
-#------
+################################################################################
 
 MoL::ODE_Method             = "rk4"
 MoL::MoL_Intermediate_Steps = 4
@@ -57,9 +57,9 @@ CoordBase::zmin = -824.530896710901
 CoordBase::xmax =  824.530896710901
 CoordBase::ymax =  824.530896710901
 CoordBase::zmax =  824.530896710901
-#CoordBase::dx   =  13.087792011284142 #gives M_BH/(dx_fin) ~ 20.5
-#CoordBase::dy   =  13.087792011284142 #and R_NS/(dx_fin) ~ 40
-#CoordBase::dz   =  13.087792011284142
+#CoordBase::dx   =  10.306636208886262 #gives M_BH/(dx_fin) ~ 25
+#CoordBase::dy   =  10.306636208886262 #and R_NS/(dx_fin) ~ 50
+#CoordBase::dz   =  10.306636208886262
 CoordBase::dx   =  20.613272417772524
 CoordBase::dy   =  20.613272417772524
 CoordBase::dz   =  20.613272417772524
@@ -88,7 +88,8 @@ Driver::ghost_size                      = 3
 Carpet::enable_all_storage        = "no"
 Carpet::use_buffer_zones          = "yes"
 Carpet::schedule_barriers         = "no"
-Carpet::timer_file 	          = "carpet-timing-statistics"
+Carpet::grid_coordinates_filename = "carpet-grid_BHNS"
+#Carpet::timer_file 	          = "carpet-timing-statistics"
 
 Carpet::poison_new_timelevels    = "yes"
 Carpet::check_for_poison         = "no"
@@ -157,9 +158,9 @@ CarpetRegrid2::radius_3[8]  = 3.220823815276957
 CarpetMask::excluded_surface       [0] = 0
 CarpetMask::excluded_surface_factor[0] = 1.0
 
-#------
-# MODEL:
-#------
+################################################################################
+# Initial Data
+################################################################################
 ActiveThorns = "Elliptica_BHNS"
 HydroBase::initial_hydro         = "Elliptica_BHNS"
 ADMBase::initial_data            = "Elliptica_BHNS"
@@ -198,10 +199,12 @@ HydroBase::timelevels            = 3
 
 SpaceMask::use_mask      = "yes"
 
+#============================================================================================
+#========== Spherical Surfaces - 0 is for NS, 1 is for BH, 2 is for merger site =============
+#============================================================================================
 SphericalSurface::nsurfaces = 8
 SphericalSurface::maxntheta = 39
 SphericalSurface::maxnphi = 76
-
 
 #SF 0 is for NS (VolumeIntegralsGRMHD), SF 1 is for BH (PunctureTracker)
 SphericalSurface::ntheta       [2] = 39
@@ -236,9 +239,9 @@ SphericalSurface::set_spherical[5] = yes
 SphericalSurface::radius       [5] = 500
 SphericalSurface::name         [5] = "waveextract surface at 500"
 
-#-----------------------------
+################################################################################
 # Evolution:
-#-----------------------------
+################################################################################
 #======= USING GRHYDRO =========
 ActiveThorns = "GRHydro"
 HydroBase::evolution_method      = "GRHydro"
@@ -315,9 +318,9 @@ Dissipation::vars                       = "
         ML_BSSN::ML_dtlapse
         ML_BSSN::ML_dtshift
 "
-#------------------------------------------------------------------------------
+################################################################################
 # Wave extraction:
-#------------------------------------------------------------------------------
+################################################################################
 ActiveThorns = "QuasiLocalMeasures WeylScal4 Multipole"
 QuasiLocalMeasures::verbose   = "no"
 SphericalSurface::verbose   = "no"
@@ -347,8 +350,11 @@ Multipole::l_max = 5
 
 
 ################################################################################
-# BH tracking
+# Tracking
 ################################################################################
+#------------------------------------------------------------------------------
+# BH tracking
+#------------------------------------------------------------------------------
 ActiveThorns = "CarpetTracker PunctureTracker"
 CarpetTracker::surface                      [0] = 1
 PunctureTracker::track                      [0] = yes
@@ -378,7 +384,7 @@ AHFinderDirect::initial_guess_method[1]                  = "coordinate sphere"
 AHFinderDirect::initial_guess__coord_sphere__x_center[1] =  0.0
 AHFinderDirect::initial_guess__coord_sphere__y_center[1] =  10.0
 AHFinderDirect::initial_guess__coord_sphere__z_center[1] =  0.0
-AHFinderDirect::initial_guess__coord_sphere__radius[1]   = 20.0
+AHFinderDirect::initial_guess__coord_sphere__radius  [1] = 20.0
 
 AHFinderDirect::track_origin_source_x                [1] = "PunctureTracker::pt_loc_x[0]"
 AHFinderDirect::track_origin_source_y                [1] = "PunctureTracker::pt_loc_y[0]"
@@ -387,6 +393,14 @@ AHFinderDirect::track_origin_source_z                [1] = "PunctureTracker::pt_
 #------------------------------------------------------------------------------
 # NS tracking
 #------------------------------------------------------------------------------
+ActiveThorns = "Hydro_Analysis"
+Hydro_Analysis::Hydro_Analysis_comp_rho_max                      = "true"
+Hydro_Analysis::Hydro_Analysis_rho_max_loc_only_positive_x       = "false"
+Hydro_Analysis::Hydro_Analysis_comp_rho_max_origin_distance      = "yes"
+Hydro_Analysis::Hydro_Analysis_average_multiple_maxima_locations = "no"
+Hydro_Analysis::Hydro_Analysis_interpolator_name                 = "Lagrange polynomial interpolation (tensor product)"
+#Hydro_Analysis::verbosity_level                                  = 2
+
 #*** get the total rest mass and com ***
 ActiveThorns="VolumeIntegrals_GRMHD"
 VolumeIntegrals_GRMHD::NumIntegrals = 4
@@ -420,7 +434,9 @@ VolumeIntegrals_GRMHD::volintegral_sphere__center_z_initial         [4] =  0.0
 VolumeIntegrals_GRMHD::volintegral_inside_sphere__radius            [4] =  256.0
 VolumeIntegrals_GRMHD::amr_centre__tracks__volintegral_inside_sphere[4] =  -1
 
-#*** get some outflow properties ***
+################################################################################
+# Outflow properties
+################################################################################
 ActiveThorns="Outflow"
 
 #set up spherical surfaces for outflow calculation
@@ -458,16 +474,16 @@ Outflow::output_2d_data       = "yes"
 Outflow::threshold_on_var     = "eninf"
 Outflow::extra_variables      = "HydroBase::vel[0] HydroBase::vel[1] HydroBase::vel[2] HydroBase::rho HydroBase::press"
 
-#------------------------------------------------------------------------------
+################################################################################
 # Checkpoint/Recovery:
-#------------------------------------------------------------------------------
-Multipole::out_every      = 64
-IOBasic::outInfo_every    = 64
-IOScalar::outScalar_every = 64
-IOASCII::out1D_every      = 64
-IOASCII::out0D_every      = 64
-IOHDF5::out1D_every       = 64
-IOHDF5::out2D_every       = 64
+################################################################################
+Multipole::out_every      = 128
+IOBasic::outInfo_every    = 128
+IOScalar::outScalar_every = 128
+IOASCII::out1D_every      = 128
+IOASCII::out0D_every      = 128
+IOHDF5::out1D_every       = 128
+IOHDF5::out2D_every       = 128
 IOHDF5::out3D_every       = -1
 IOHDF5::checkpoint        = "yes"
 IOUtil::checkpoint_id     = "yes"
@@ -496,7 +512,8 @@ CarpetIOScalar::outScalar_reductions = "maximum norm2 minimum"
 CarpetIOScalar::one_file_per_group = no
 IOScalar::outScalar_vars     = "HydroBase::rho HydroBase::press HydroBase::vel ML_BSSN::ML_Ham ML_BSSN::phi ML_BSSN::ML_Mom ADMBase::lapse ADMBase::shift"
 
-IOASCII::out0D_vars		= "Carpet::timing PunctureTracker::pt_loc_x[0] PunctureTracker::pt_loc_y[0] PunctureTracker::pt_loc_z[0]"
+#IOASCII::out0D_vars		= "Carpet::timing PunctureTracker::pt_loc_x[0] PunctureTracker::pt_loc_y[0] PunctureTracker::pt_loc_z[0]"
+IOASCII::out0D_vars		= "PunctureTracker::pt_loc_x[0] PunctureTracker::pt_loc_y[0] PunctureTracker::pt_loc_z[0] Hydro_Analysis::Hydro_Analysis_rho_max_loc"
 
 IOASCII::out1D_x = no
 IOASCII::out1D_y = no
