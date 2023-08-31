@@ -1,0 +1,12 @@
+## todo
+
+. double check the consistency
+. redundancy in output file
+. how to lower the number of ref
+. how to extend it for other eos
+. merger time?
+. when to stop a run?
+. is bns tracker good?
+.
+
+
