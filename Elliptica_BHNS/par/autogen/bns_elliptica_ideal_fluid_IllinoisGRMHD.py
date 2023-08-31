@@ -151,8 +151,25 @@ def main():
   setd('position_x_2',param_dict['NS2_center_x'])
   setd('position_y_2',param_dict['NS2_center_y'])
   
-  setd('NS_radius1',param_dict['NS1_max_radius'])
-  setd('NS_radius2',param_dict['NS2_max_radius'])
+  ## regions
+  ns_r1 = 1.15*ceil(param_dict['NS1_max_radius'])
+  ns_r2 = 1.15*ceil(param_dict['NS2_max_radius'])
+  
+  ## region1
+  setd('2**0*NS_radius1',ns_r1)
+  setd('2**1*NS_radius1',2*ns_r1)
+  setd('2**2*NS_radius1',2**2*ns_r1)
+  setd('2**3*NS_radius1',2**3*ns_r1)
+  setd('2**4*NS_radius1',2**4*ns_r1)
+  setd('2**5*NS_radius1',2**5*ns_r1)
+  
+  ## region2
+  setd('2**0*NS_radius2',ns_r2)
+  setd('2**1*NS_radius2',2*ns_r2)
+  setd('2**2*NS_radius2',2**2*ns_r2)
+  setd('2**3*NS_radius2',2**3*ns_r2)
+  setd('2**4*NS_radius2',2**4*ns_r2)
+  setd('2**5*NS_radius2',2**5*ns_r2)
   
   ## default length
   Max = 1024

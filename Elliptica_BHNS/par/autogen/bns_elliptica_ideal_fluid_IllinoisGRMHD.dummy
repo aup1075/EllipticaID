@@ -151,12 +151,12 @@ CarpetRegrid2::active_1     = "yes"
 CarpetRegrid2::num_levels_1 = 7
 CarpetRegrid2::position_x_1 = @position_x_1@
 CarpetRegrid2::position_y_1 = @position_y_1@
-CarpetRegrid2::radius_1[1]  = 300.0
-CarpetRegrid2::radius_1[2]  = 160.0
-CarpetRegrid2::radius_1[3]  = 80.0
-CarpetRegrid2::radius_1[4]  = 40.0
-CarpetRegrid2::radius_1[5]  = 20.0
-CarpetRegrid2::radius_1[6]  = @NS_radius1@
+CarpetRegrid2::radius_1[1]  = @2**5*NS_radius1@
+CarpetRegrid2::radius_1[2]  = @2**4*NS_radius1@
+CarpetRegrid2::radius_1[3]  = @2**3*NS_radius1@
+CarpetRegrid2::radius_1[4]  = @2**2*NS_radius1@
+CarpetRegrid2::radius_1[5]  = @2**1*NS_radius1@
+CarpetRegrid2::radius_1[6]  = @2**0*NS_radius1@
 
 #############
 ## Region2 ##
@@ -165,12 +165,12 @@ CarpetRegrid2::active_2     = "yes"
 CarpetRegrid2::num_levels_2 = 7
 CarpetRegrid2::position_x_2 = @position_x_2@
 CarpetRegrid2::position_y_2 = @position_y_2@
-CarpetRegrid2::radius_2[1]  = 300.0
-CarpetRegrid2::radius_2[2]  = 160.0
-CarpetRegrid2::radius_2[3]  = 80.0
-CarpetRegrid2::radius_2[4]  = 40.0
-CarpetRegrid2::radius_2[5]  = 20.0
-CarpetRegrid2::radius_2[6]  = @NS_radius2@
+CarpetRegrid2::radius_2[1]  = @2**5*NS_radius2@
+CarpetRegrid2::radius_2[2]  = @2**4*NS_radius2@
+CarpetRegrid2::radius_2[3]  = @2**3*NS_radius2@
+CarpetRegrid2::radius_2[4]  = @2**2*NS_radius2@
+CarpetRegrid2::radius_2[5]  = @2**1*NS_radius2@
+CarpetRegrid2::radius_2[6]  = @2**0*NS_radius2@
 
 #############
 ## Region3 ##
