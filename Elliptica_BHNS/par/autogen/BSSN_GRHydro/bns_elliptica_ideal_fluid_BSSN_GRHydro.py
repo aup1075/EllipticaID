@@ -14,7 +14,12 @@ import argparse
 ## ---------------------------------------------------------------------- ##
 
 ## global vars
-g_data = ''
+g_final_time = 2500.0
+g_dtfac      = 0.25
+g_length     = 400
+g_regrid     = 128
+g_ns_expand  = 1.2
+g_data       = ''
 
 def sets(rhs,val,comment=''):
   """
@@ -134,15 +139,21 @@ def main():
     file.close()
 
   ## set params in the dummy ##
+  ############################ ///////////////////
   
-  ## id path
-  sets('id_path',args.i)
-
-  ## eos
-  k = param_dict['NS1_EoS_K0']
-  g = param_dict['NS1_EoS_Gamma']
-  setd('poly_k',k)
-  setd('poly_gamma',g)
+  ## time:
+  setd('cctk_final_time',g_final_time)
+  setd('dtfac',g_dtfac)
+  
+  ## grid:
+  setd('xmin',-g_length)
+  setd('xmax',g_length)
+  setd('ymin',-g_length)
+  setd('ymax',g_length)
+  setd('zmin',-g_length)
+  setd('zmax',g_length)
+  
+  seti('regrid_every',g_regrid)
   
   ## positions
   setd('position_x_1',param_dict['NS1_center_x'])
@@ -152,8 +163,8 @@ def main():
   setd('position_y_2',param_dict['NS2_center_y'])
   
   ## regions
-  ns_r1 = 1.15*ceil(param_dict['NS1_max_radius'])
-  ns_r2 = 1.15*ceil(param_dict['NS2_max_radius'])
+  ns_r1 = g_ns_expand*ceil(param_dict['NS1_max_radius'])
+  ns_r2 = g_ns_expand*ceil(param_dict['NS2_max_radius'])
   
   ## region1
   setd('2**0*NS_radius1',ns_r1)
@@ -170,15 +181,21 @@ def main():
   setd('2**3*NS_radius2',2**3*ns_r2)
   setd('2**4*NS_radius2',2**4*ns_r2)
   setd('2**5*NS_radius2',2**5*ns_r2)
-  
-  ## default length
-  Max = 1024
-  setd('xmin',-Max)
-  setd('xmax',Max)
-  setd('ymin',-Max)
-  setd('ymax',Max)
-  setd('zmax',Max)
 
+  ## id path
+  sets('id_path',args.i)
+
+  ## eos
+  k = param_dict['NS1_EoS_K0']
+  g = param_dict['NS1_EoS_Gamma']
+  setd('poly_k',k)
+  setd('poly_gamma',g)
+ 
+  
+  ############################/////////////////////
+  
+  
+  
   ## bitant?
   if args.b == 'y':
     setd('zmin',0)

@@ -1,39 +1,41 @@
-## EKT param file for BNS systems that uses Elliptica ID ##
+## EKT param file for BNS systems ##
+## ID      = Elliptica
 ## EoS     = ideal fluid
 ## Hydro   = GRHydro
 ## Gravity = ML_BSSN
 
 
-# Carpet parameter file for binary Neutron star system
-# physical ID is LORENE dataset G2_I12vs12_D4R33T21_45km.resu
-#
-
-#------------------------------------------------------------------------------
-# Cactus parameters:
-#------------------------------------------------------------------------------
-Cactus::cctk_run_title     = "Meudon BNS"
+## ---------------------------------------------------------------------- ##
+############
+## Cactus ##
+############
+Cactus::cctk_run_title     = "Elliptica BNS"
 Cactus::cctk_full_warnings = "yes"
+Cactus::terminate          = "time"
+Cactus::cctk_final_time    = @cctk_final_time@
 Cactus::highlight_warning_messages = "no"
 
-Cactus::terminate       = "time"
-Cactus::cctk_final_time = 2500.0
+## ---------------------------------------------------------------------- ##
+###########
+## Thorn ##
+###########
 
-#------------------------------------------------------------------------------
-# Activate all necessary thorns:
-#------------------------------------------------------------------------------
-
-ActiveThorns = "Boundary CartGrid3D CoordBase Fortran InitBase IOUtil LocalReduce SymBase Time"
-ActiveThorns = "AEILocalInterp"
+ActiveThorns = "Elliptica_BHNS"
+ActiveThorns = "EOS_Omni"
+ActiveThorns = "CoordBase"
+ActiveThorns = "Boundary CartGrid3D CoordBase Fortran InitBase IOUtil"
+ActiveThorns = "LocalReduce SymBase Time AEILocalInterp"
 ActiveThorns = "MoL Slab SpaceMask SphericalSurface"
-ActiveThorns = "Carpet CarpetInterp CarpetInterp2 CarpetIOASCII CarpetIOHDF5 CarpetIOScalar CarpetLib CarpetIOBasic CarpetReduce CarpetRegrid2 CarpetSlab CarpetTracker CarpetMask LoopControl"
-ActiveThorns = "Formaline"
+ActiveThorns = "Carpet CarpetInterp CarpetInterp2"
+ActiveThorns = "CarpetIOASCII CarpetIOHDF5 CarpetIOScalar CarpetLib CarpetIOBasic"
+ActiveThorns = "CarpetReduce CarpetRegrid2 CarpetSlab CarpetTracker CarpetMask"
+ActiveThorns = "LoopControl Formaline"
 ActiveThorns = "HTTPD Socket"
 ActiveThorns = "NaNChecker TerminationTrigger TimerReport"
 ActiveThorns = "ADMbase ADMcoupling ADMmacros CoordGauge StaticConformal"
 ActiveThorns = "RotatingSymmetry180 ReflectionSymmetry"
 ActiveThorns = "Constants TmunuBase HydroBase "
 ActiveThorns = "QuasiLocalMeasures"
-ActiveThorns = "EOS_Omni"
 ActiveThorns = "GRHydro"
 ActiveThorns = "SummationByParts"
 ActiveThorns = "GenericFD NewRad"
@@ -41,14 +43,12 @@ ActiveThorns = "ML_BSSN ML_BSSN_Helper ML_ADMConstraints"
 ActiveThorns = "Hydro_Analysis NSTracker"
 ActiveThorns = "Dissipation"
 ActiveThorns = "SystemStatistics SystemTopology"
+ActiveThorns = "WeylScal4 Multipole" # Wave extraction (Psi4)
 
-# Wave extraction (Psi4)
-ActiveThorns = "WeylScal4 Multipole"
-
-
-#------------------------------------------------------------------------------
-# Diagnostic parameters:
-#------------------------------------------------------------------------------
+## ---------------------------------------------------------------------- ##
+################
+## Diagnostic ##
+################
 
 Carpet::output_timers_every = 0
 Carpet::storage_verbose   = "no"
@@ -57,13 +57,12 @@ Carpet::veryverbose       = "no"
 Carpet::grid_structure_filename   = "carpet-grid-structure"
 Carpet::grid_coordinates_filename = "carpet-grid-coordinates"
 
-CarpetLib::output_bboxes  = "no"
-
-CarpetMask::verbose    = "no"
-CarpetReduce::verbose  = "no"
-CarpetRegrid2::verbose = "no"
-CarpetRegrid2::veryverbose    = "no"
-CarpetTracker::verbose = "no"
+CarpetLib::output_bboxes   = "no"
+CarpetMask::verbose        = "no"
+CarpetReduce::verbose      = "no"
+CarpetRegrid2::verbose     = "no"
+CarpetRegrid2::veryverbose = "no"
+CarpetTracker::verbose     = "no"
 
 
 TimerReport::out_every    = 4096
@@ -73,13 +72,14 @@ TimerReport::output_all_timers_together = "yes"
 TimerReport::output_all_timers_readable = "yes"
 TimerReport::n_top_timers               = 40
 
-
-QuasiLocalMeasures::verbose   = "no"
+QuasiLocalMeasures::verbose = "no"
 SphericalSurface::verbose   = "no"
 
-#------------------------------------------------------------------------------
-# Utility parameters:
-#------------------------------------------------------------------------------
+
+## ---------------------------------------------------------------------- ##
+#############
+## Utility ##
+#############
 
 NaNChecker::check_every    =  128 # twice for every_coarse
 NaNChecker::check_vars = "
@@ -95,35 +95,33 @@ NaNChecker::check_vars = "
 NaNChecker::action_if_found   =  "terminate"
 #NaNChecker::action_if_found = "just warn" #"terminate", "just warn", "abort"
 
-#------------------------------------------------------------------------------
-# Run parameters:
-#------------------------------------------------------------------------------
 
-#------
-# Grid:
-#------
+## ---------------------------------------------------------------------- ##
+######################
+## Time integration ##
+######################
 
 MoL::ODE_Method             = "rk4"
 MoL::MoL_Intermediate_Steps = 4
 MoL::MoL_Num_Scratch_Levels = 1
 # use dt = 0.4 dx (works for core collapse)
-Time::dtfac = 0.4
+Time::dtfac = @dtfac@
 
+## ---------------------------------------------------------------------- ##
+##########
+## Grid ##
+##########
 
+CartGrid3D::type              = "coordbase"
+Carpet::domain_from_coordbase = "yes"
+CoordBase::domainsize         = "minmax"
 
-ActiveThorns = "CoordBase"
-
-CoordBase::domainsize = "minmax"
-
-CoordBase::xmin =    0.00
-CoordBase::ymin = -400.00
-CoordBase::zmin =    0.00
-CoordBase::xmax = +400.00
-CoordBase::ymax = +400.00
-CoordBase::zmax = +400.00
-CoordBase::dx   =    8.00
-CoordBase::dy   =    8.00
-CoordBase::dz   =    8.00
+CoordBase::xmin = @xmin@
+CoordBase::xmax = @xmax@
+CoordBase::ymin = @ymin@
+CoordBase::ymax = @ymax@
+CoordBase::zmin = @zmin@
+CoordBase::zmax = @zmax@
 
 CoordBase::boundary_size_x_lower     = 3
 CoordBase::boundary_size_y_lower     = 3
@@ -131,90 +129,110 @@ CoordBase::boundary_size_z_lower     = 3
 CoordBase::boundary_size_x_upper     = 3
 CoordBase::boundary_size_y_upper     = 3
 CoordBase::boundary_size_z_upper     = 3
-
-CoordBase::boundary_shiftout_x_lower = 1
+CoordBase::boundary_shiftout_x_lower = 0
 CoordBase::boundary_shiftout_y_lower = 0
-CoordBase::boundary_shiftout_z_lower = 1
+CoordBase::boundary_shiftout_z_lower = 0
+CoordBase::boundary_staggered_x_lower = "yes"
+CoordBase::boundary_staggered_x_upper = "yes"
+CoordBase::boundary_staggered_y_lower = "yes"
+CoordBase::boundary_staggered_y_upper = "yes"
+CoordBase::boundary_staggered_z_lower = "yes"
+CoordBase::boundary_staggered_z_upper = "yes"
 
-ReflectionSymmetry::reflection_z   = "yes"
-ReflectionSymmetry::avoid_origin_z = "no"
+CoordBase::spacing  = "numcells"
+CoordBase::ncells_x = @ncells_x@
+CoordBase::ncells_y = @ncells_y@
+CoordBase::ncells_z = @ncells_z@
 
-CartGrid3D::type = "coordbase"
-Carpet::domain_from_coordbase = "yes"
+ReflectionSymmetry::reflection_x   = "no"
+ReflectionSymmetry::reflection_y   = "no"
+ReflectionSymmetry::reflection_z   = "no"
+ReflectionSymmetry::avoid_origin_x = "yes"
+ReflectionSymmetry::avoid_origin_y = "yes"
+ReflectionSymmetry::avoid_origin_z = "yes"
 
-Driver::ghost_size                      = 3
+Driver::ghost_size   = 3
+Driver::ghost_size_x = 3
+Driver::ghost_size_y = 3
+Driver::ghost_size_z = 3
 
-
-# General Carpet parameters:
 Carpet::enable_all_storage       = "no"
 Carpet::use_buffer_zones         = "yes"
 Carpet::schedule_barriers        = "no"
-
 Carpet::poison_new_timelevels    = "yes"
 Carpet::check_for_poison         = "no"
-
 Carpet::init_3_timelevels        = "no"
 Carpet::init_fill_timelevels     = "yes"
+Carpet::max_refinement_levels    = 9 
+Carpet::prolongation_order_space = 5
+Carpet::prolongation_order_time  = 2
+Carpet::refinement_centering     = "cell"
 
 CarpetLib::poison_new_memory         = "yes"
 CarpetLib::poison_value              = 114
 CarpetLib::check_bboxes              = "no"
 CarpetLib::interleave_communications = "yes"
 CarpetLib::combine_sends             = "yes"
-
-
-CarpetInterp::tree_search = "yes"
+CarpetInterp::tree_search       = "yes"
 CarpetInterp::check_tree_search = "no"
 
 CarpetRegrid2::freeze_unaligned_levels = "yes"
 CarpetRegrid2::freeze_unaligned_parent_levels = "yes"
 CarpetRegrid2::ensure_proper_nesting   = "yes"
 CarpetRegrid2::snap_to_coarse          = "yes"
-CarpetRegrid2::symmetry_rotating180    = "yes"
+CarpetRegrid2::symmetry_rotating180    = "no"
+CarpetRegrid2::regrid_every            = @regrid_every@
+CarpetRegrid2::num_centres             = 3
 
-# System specific Carpet parameters:
-Carpet::max_refinement_levels    = 9 
-Carpet::prolongation_order_space = 5
-Carpet::prolongation_order_time  = 2
-Carpet::refinement_centering     = "vertex"
-
-CarpetRegrid2::regrid_every = 2 # as often as required 
-CarpetRegrid2::num_centres  = 3
-
-# box sizes are given by:
-# * the stars seem to puff up to about 13M during the initial phase of the evolution
-# * I need 12 buffer points (RK4, 3 ghost zones)
-# * need three coarse points for interpolation onto last fine buffer point
-# these boxes are minimal in this sense. The coarser grid are completely
-# covered by the finer grids and their buffers.
-# add 4 coarse grid points in between to have some leeway against roundoff
-# grid step sizes are for coarsest anticipated simulation dx = 1.5M
+#############
+## Region1 ##
+#############
+CarpetRegrid2::active_1     = "yes"
 CarpetRegrid2::num_levels_1 = 7
-CarpetRegrid2::position_x_1 = 15.1875
-CarpetRegrid2::radius_1[1]  =240.0
-CarpetRegrid2::radius_1[2]  =120.0
-CarpetRegrid2::radius_1[3]  = 60.0
-CarpetRegrid2::radius_1[4]  = 26.125
-CarpetRegrid2::radius_1[5]  = 17.875
-CarpetRegrid2::radius_1[6]  = 13     # star seems about 9.5 intially, then puffs up
+CarpetRegrid2::position_x_1 = @position_x_1@
+CarpetRegrid2::position_y_1 = @position_y_1@
+CarpetRegrid2::radius_1[1]  = @2**5*NS_radius1@
+CarpetRegrid2::radius_1[2]  = @2**4*NS_radius1@
+CarpetRegrid2::radius_1[3]  = @2**3*NS_radius1@
+CarpetRegrid2::radius_1[4]  = @2**2*NS_radius1@
+CarpetRegrid2::radius_1[5]  = @2**1*NS_radius1@
+CarpetRegrid2::radius_1[6]  = @2**0*NS_radius1@
 
+#############
+## Region2 ##
+#############
+CarpetRegrid2::active_2     = "yes"
 CarpetRegrid2::num_levels_2 = 7
-CarpetRegrid2::position_x_2 = -15.1875
-CarpetRegrid2::radius_2[1]  =240.0
-CarpetRegrid2::radius_2[2]  =120.0
-CarpetRegrid2::radius_2[3]  = 60.0
-CarpetRegrid2::radius_2[4]  = 26.125
-CarpetRegrid2::radius_2[5]  = 17.875
-CarpetRegrid2::radius_2[6]  = 13
+CarpetRegrid2::position_x_2 = @position_x_2@
+CarpetRegrid2::position_y_2 = @position_y_2@
+CarpetRegrid2::radius_2[1]  = @2**5*NS_radius2@
+CarpetRegrid2::radius_2[2]  = @2**4*NS_radius2@
+CarpetRegrid2::radius_2[3]  = @2**3*NS_radius2@
+CarpetRegrid2::radius_2[4]  = @2**2*NS_radius2@
+CarpetRegrid2::radius_2[5]  = @2**1*NS_radius2@
+CarpetRegrid2::radius_2[6]  = @2**0*NS_radius2@
 
-CarpetRegrid2::num_levels_3 = 1
-CarpetRegrid2::radius_3[1]  =240.0
-CarpetRegrid2::radius_3[2]  =120.0
-CarpetRegrid2::radius_3[3]  = 60.0
-CarpetRegrid2::radius_3[4]  = 30.0
-CarpetRegrid2::radius_3[5]  = 15.0 
-CarpetRegrid2::radius_3[6]  =  7.5
-CarpetRegrid2::radius_3[7]  =  3.75
+#############
+## Region3 ##
+#############
+CarpetRegrid2::active_3      = "yes"
+CarpetRegrid2::num_levels_3  = 3
+CarpetRegrid2::position_x_3  = 0.0
+CarpetRegrid2::position_y_3  = 0.0
+CarpetRegrid2::radius_3[1]   = 320.0
+CarpetRegrid2::radius_3[2]   = 160.0
+CarpetRegrid2::radius_3[3]   = 80.0
+CarpetRegrid2::radius_3[4]   = 40.0
+CarpetRegrid2::radius_x_3[5] = 20.0
+CarpetRegrid2::radius_y_3[5] = 20.0
+CarpetRegrid2::radius_z_3[5] = 15.0
+CarpetRegrid2::radius_3[6]   = 10.0
+CarpetRegrid2::radius_3[7]   = 5.0
+
+## ---------------------------------------------------------------------- ##
+#################
+## BNS Tracker ##
+#################
 
 CarpetMask::excluded_surface       [0] = 2
 CarpetMask::excluded_surface_factor[0] = 1.0
@@ -222,32 +240,62 @@ CarpetMask::excluded_surface_factor[0] = 1.0
 CarpetTracker::surface_name[0] = "Righthand NS"
 CarpetTracker::surface_name[1] = "Lefthand NS"
 
-#------
-# MODEL:
-#------
+## ---------------------------------------------------------------------- ##
+########
+## ID ##
+########
 
-ActiveThorns = "Meudon_Bin_NS"
-HydroBase::initial_hydro         = "Meudon_Bin_NS"
-ADMBase::initial_data            = "Meudon_Bin_NS"
-ADMBase::initial_lapse           = "Meudon_Bin_NS"
-ADMBase::initial_shift           = "zero"
-ADMBase::initial_dtlapse         = "Meudon_Bin_NS"
-ADMBase::initial_dtshift         = "zero"
+HydroBase::initial_hydro = "Elliptica_BHNS"
+ADMBase::initial_data    = "Elliptica_BHNS"
+ADMBase::initial_lapse   = "Elliptica_BHNS"
+ADMBase::initial_shift   = "zero"
+ADMBase::initial_dtlapse = "Elliptica_BHNS"
+ADMBase::initial_dtshift = "zero"
 
-# change this to be the full path to he initial data file
-Meudon_Bin_NS::filename ="/scratch/bblq/rhaas/G2_I12vs12_D4R33T21_45km.resu"
-# M_ADM      3.251
-# separation 45km
-# K          123.6
-# Gamma      2
+Elliptica_BHNS::poly_K                = @poly_k@
+Elliptica_BHNS::poly_gamma            = @poly_gamma@
+Elliptica_BHNS::ID_type               = "BNS"
+Elliptica_BHNS::Elliptica_bhns_file   = "@id_path@"
+Elliptica_BHNS::Elliptica_bhns_option = "generic"
 
-EOS_Omni::poly_K = 123.613314525753
+## ---------------------------------------------------------------------- ##
+#########
+## EOS ##
+#########
+Elliptica_BHNS::eos_table = "Ideal_Fluid"
+EOS_Omni::poly_K          = @poly_k@
+EOS_Omni::poly_Gamma      = @poly_gamma@
 
-# For other (non-Polytropic) EOSs Meudon_Bin_NS::eos_table should be labelled
-# e.g. ="Hybrid" for hybrid EOS.
-#----------
-# Numerics:
-#----------
+## ---------------------------------------------------------------------- ##
+###################
+## Hydrodynamics ##
+###################
+
+HydroBase::evolution_method      = "GRHydro"
+HydroBase::timelevels            = 3
+
+GRHydro::sources_spatial_order     = 4
+GRHydro::riemann_solver            = "HLLE"   # Marquina is currently not supported by MP
+GRHydro::recon_method              = "ppm"
+GRHydro::GRHydro_stencil           = 3
+GRHydro::bound                     = "flat"
+GRHydro::rho_abs_min               = 1.e-11
+GRHydro::GRHydro_atmo_tolerance    = 0.01
+GRHydro::c2p_reset_pressure        = "yes"
+GRHydro::GRHydro_eos_type          = "General"
+GRHydro::GRHydro_eos_table         = "Ideal_Fluid"
+
+# these can save some memory since they prevent MoL from allocating unnecessary
+# scratch space for saveandrestore variables
+GRHydro::GRHydro_MaxNumSandRVars = 0
+
+GRHydro::use_enhanced_ppm        = "yes"
+# Parameters are defaults, which in turn are from Colella & Sekora 2008 and
+# McCorquodale & Colella 2011
+GRHydro::sync_conserved_only     = "yes"
+GRHydro::reconstruct_Wv          = "yes"
+GRHydro::c2p_resort_to_bisection = "yes"
+GRHydro::use_cxx_code            = "yes"
 
 InitBase::initial_data_setup_method = "init_some_levels"
 
@@ -257,7 +305,66 @@ TmunuBase::timelevels            =  1
 TmunuBase::prolongation_type     = "none"
 TmunuBase::support_old_CalcTmunu_mechanism = "no"
 
-HydroBase::timelevels            = 3
+
+## ---------------------------------------------------------------------- ##
+#########################
+## Spacetime evolution ##
+#########################
+
+ADMMacros::spatial_order = 4
+ADMBase::metric_type                    = physical
+ADMBase::evolution_method               = ML_BSSN
+ADMBase::lapse_evolution_method         = ML_BSSN
+ADMBase::shift_evolution_method         = ML_BSSN
+ADMBase::dtlapse_evolution_method       = ML_BSSN
+ADMBase::dtshift_evolution_method       = ML_BSSN
+
+ML_BSSN::timelevels                     = 3
+ML_BSSN::my_initial_data                = "ADMBase"
+ML_BSSN::my_initial_boundary_condition  = "extrapolate-gammas"
+ML_BSSN::my_boundary_condition          = "none"
+ML_BSSN::my_rhs_boundary_condition      = "NewRad"
+Boundary::radpower                      = 2 # not really needed I think but who knows what NewRad uses
+
+ML_BSSN::harmonicN           = 1      # 1+log
+ML_BSSN::harmonicF           = 2.0    # 1+log
+ML_BSSN::ShiftGammaCoeff     = 0.75
+ML_BSSN::AlphaDriver         = 0.0
+ML_BSSN::BetaDriver          = 1.0
+ML_BSSN::LapseAdvectionCoeff = 1.0
+ML_BSSN::ShiftAdvectionCoeff = 1.0
+
+ML_BSSN::MinimumLapse        = 1.0e-8
+ML_BSSN::ML_log_confac_bound = "none"
+ML_BSSN::ML_metric_bound     = "none"
+ML_BSSN::ML_Gamma_bound      = "none"
+ML_BSSN::ML_trace_curv_bound = "none"
+ML_BSSN::ML_curv_bound       = "none"
+ML_BSSN::ML_lapse_bound      = "none"
+ML_BSSN::ML_dtlapse_bound    = "none"
+ML_BSSN::ML_shift_bound      = "none"
+ML_BSSN::ML_dtshift_bound    = "none"
+
+ML_BSSN::UseSpatialBetaDriver    = 1
+ML_BSSN::SpatialBetaDriverRadius = 50
+
+ML_BSSN::apply_dissipation  = "never"
+
+Dissipation::epsdis = 0.1
+Dissipation::order  = 5
+Dissipation::vars   = "
+        ML_BSSN::ML_log_confac
+        ML_BSSN::ML_metric
+        ML_BSSN::ML_trace_curv
+        ML_BSSN::ML_curv
+        ML_BSSN::ML_Gamma
+        ML_BSSN::ML_lapse
+        ML_BSSN::ML_shift
+        ML_BSSN::ML_dtlapse
+        ML_BSSN::ML_dtshift
+"
+
+
 
 SpaceMask::use_mask      = "yes"
 
@@ -293,94 +400,7 @@ SphericalSurface::set_spherical[4] = yes
 SphericalSurface::radius      [4] = 250
 SphericalSurface::name        [4] = "waveextract surface at 250"
 
-#-----------
-# Evolution:
-#-----------
 
-HydroBase::evolution_method      = "GRHydro"
-
-ADMMacros::spatial_order = 4
-GRHydro::sources_spatial_order = 4
-
-GRHydro::riemann_solver            = "HLLE"   # Marquina is currently not supported by MP
-GRHydro::recon_method              = "ppm"
-GRHydro::GRHydro_stencil            = 3
-GRHydro::bound                     = "flat"
-GRHydro::rho_abs_min               = 1.e-11
-GRHydro::GRHydro_atmo_tolerance    = 0.01
-
-GRHydro::c2p_reset_pressure        = "yes"
-
-GRHydro::GRHydro_eos_type           = "General"
-GRHydro::GRHydro_eos_table          = "Ideal_Fluid"
-
-# these can save some memory since they prevent MoL from allocating unnecessary
-# scratch space for saveandrestore variables
-GRHydro::GRHydro_MaxNumSandRVars = 0
-
-GRHydro::use_enhanced_ppm            = "yes"
-# Parameters are defaults, which in turn are from Colella & Sekora 2008 and
-# McCorquodale & Colella 2011
-GRHydro::sync_conserved_only     = "yes"
-GRHydro::reconstruct_Wv          = "yes"
-GRHydro::c2p_resort_to_bisection = "yes"
-GRHydro::use_cxx_code            = "yes"
-
-
-# MacLachlan evolution parameters
-
-ADMBase::metric_type                    = physical
-ADMBase::evolution_method               = ML_BSSN
-ADMBase::lapse_evolution_method         = ML_BSSN
-ADMBase::shift_evolution_method         = ML_BSSN
-ADMBase::dtlapse_evolution_method       = ML_BSSN
-ADMBase::dtshift_evolution_method       = ML_BSSN
-
-
-ML_BSSN::timelevels                     = 3
-ML_BSSN::my_initial_data                = "ADMBase"
-ML_BSSN::my_initial_boundary_condition  = "extrapolate-gammas"
-ML_BSSN::my_boundary_condition          = "none"
-ML_BSSN::my_rhs_boundary_condition       = "NewRad"
-Boundary::radpower                      = 2 # not really needed I think but who knows what NewRad uses
-
-ML_BSSN::harmonicN           = 1      # 1+log
-ML_BSSN::harmonicF           = 2.0    # 1+log
-ML_BSSN::ShiftGammaCoeff     = 0.75
-ML_BSSN::AlphaDriver         = 0.0
-ML_BSSN::BetaDriver          = 1.0
-ML_BSSN::LapseAdvectionCoeff = 1.0
-ML_BSSN::ShiftAdvectionCoeff = 1.0
-
-ML_BSSN::MinimumLapse = 1.0e-8
-ML_BSSN::ML_log_confac_bound = "none"
-ML_BSSN::ML_metric_bound     = "none"
-ML_BSSN::ML_Gamma_bound      = "none"
-ML_BSSN::ML_trace_curv_bound = "none"
-ML_BSSN::ML_curv_bound       = "none"
-ML_BSSN::ML_lapse_bound      = "none"
-ML_BSSN::ML_dtlapse_bound    = "none"
-ML_BSSN::ML_shift_bound      = "none"
-ML_BSSN::ML_dtshift_bound    = "none"
-
-ML_BSSN::UseSpatialBetaDriver = 1
-ML_BSSN::SpatialBetaDriverRadius = 50
-
-ML_BSSN::apply_dissipation   = "never"
-
-Dissipation::epsdis = 0.1
-Dissipation::order = 5
-Dissipation::vars                       = "
-        ML_BSSN::ML_log_confac
-        ML_BSSN::ML_metric
-        ML_BSSN::ML_trace_curv
-        ML_BSSN::ML_curv
-        ML_BSSN::ML_Gamma
-        ML_BSSN::ML_lapse
-        ML_BSSN::ML_shift
-        ML_BSSN::ML_dtlapse
-        ML_BSSN::ML_dtshift
-"
 
 #------------------------------------------------------------------------------
 # Output:
@@ -587,3 +607,7 @@ Trigger::Trigger_Checked_Value   [3]=0.
 Trigger::Trigger_Reaction        [3]="steerscalar"
 Trigger::Trigger_Steered_Scalar      [3] = "CarpetRegrid2::num_levels[1]" # == num_levels_2
 Trigger::Trigger_Steered_Scalar_Value[3] = "1"
+
+#############
+## THE END ##
+#############
