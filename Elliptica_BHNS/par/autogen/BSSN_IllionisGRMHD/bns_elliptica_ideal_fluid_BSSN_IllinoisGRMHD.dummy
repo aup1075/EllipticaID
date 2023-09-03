@@ -1,6 +1,7 @@
-## EKT param file for BNS systems that uses Elliptica ID ##
+## EKT param file for BNS systems ##
+## ID      = Elliptica
 ## EoS     = ideal fluid
-## Hydro   = IllinoisGRMHD
+## Hydro   = GRHydro
 ## Gravity = ML_BSSN
 
 ## ---------------------------------------------------------------------- ##

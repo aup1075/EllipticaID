@@ -11,6 +11,8 @@
 . cfl?
 . RK order?
 . convergence?
+. is bitant correct?
+
 
 
 
