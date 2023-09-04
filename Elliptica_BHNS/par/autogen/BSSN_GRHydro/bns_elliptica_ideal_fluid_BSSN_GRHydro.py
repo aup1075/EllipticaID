@@ -69,7 +69,7 @@ def parse_cli():
       help="path/to/Elliptica/NSNS_properties.txt")
   p.add_argument("-i", type=str, required=True,
       help="path/to/Elliptica/checkpoint.dat")
-  p.add_argument("-r", type=float, required=True,
+  p.add_argument("-r", type=int, required=True,
       help="resolution, ex: 256, 128, etc.")
   p.add_argument("-ft", type=float, default=2500.,
       help="final time")
@@ -201,13 +201,13 @@ def main():
   d = param_dict['NSNS_separation']
   output=f'bns_gamma{g:0.1f}_k{k:0.1f}_n{int(args.r)}.par'
   with open(f'{output}', 'w') as file:
-    file.write(f'## final time     = {args.ft:0.2f}\n')
-    file.write(f'## merger time    = {args.mt:0.2f}\n')
-    file.write(f'## walltime       = {args.wt:0.2f}\n')
+    file.write(f'## final time     = {args.ft:0.2f} M0\n')
+    file.write(f'## merger time    = {args.mt:0.2f} M0\n')
+    file.write(f'## walltime       = {args.wt/(60.):0.2f} h\n')
     file.write(f'## CFL            = {g_dtfac:0.2f}\n')
-    file.write(f'## Length         = {2*g_length:0.2f}\n')
+    file.write(f'## Length         = {2*g_length:0.2f} M0\n')
     file.write(f'## resolution     = {args.r}\n')
-    file.write(f'## BNS_separation = {d:0.2f}\n')
+    file.write(f'## BNS_separation = {d:0.2f} M0\n')
     file.write(f'## ID path        = {args.i}\n')
     file.write(g_data)
   
