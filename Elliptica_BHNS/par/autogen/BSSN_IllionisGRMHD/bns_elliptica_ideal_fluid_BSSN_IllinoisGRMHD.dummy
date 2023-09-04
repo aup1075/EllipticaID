@@ -27,6 +27,8 @@ ActiveThorns = "SummationByParts"
 ActiveThorns = "GenericFD NewRad"
 ActiveThorns = "AEILocalInterp LocalInterp"
 ActiveThorns = "NaNChecker TerminationTrigger"
+ActiveThorns = "AHFinderDirect"
+ActiveThorns = "Outflow"
 
 ## ---------------------------------------------------------------------- ##
 ########

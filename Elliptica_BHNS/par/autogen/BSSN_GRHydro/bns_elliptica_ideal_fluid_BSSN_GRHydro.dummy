@@ -33,6 +33,8 @@ ActiveThorns = "Dissipation"
 ActiveThorns = "SystemStatistics SystemTopology"
 ActiveThorns = "WeylScal4 Multipole" # Wave extraction (Psi4)
 ActiveThorns = "TerminationTrigger Trigger"
+ActiveThorns = "AHFinderDirect"
+ActiveThorns = "Outflow"
 #ActiveThorns = "HTTPD Socket"
 
 ## ---------------------------------------------------------------------- ##
