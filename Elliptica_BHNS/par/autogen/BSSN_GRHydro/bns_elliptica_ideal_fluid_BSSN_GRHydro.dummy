@@ -48,7 +48,7 @@ ADMBase::initial_dtshift = "zero"
 
 Elliptica_BHNS::poly_K                = @poly_k@
 Elliptica_BHNS::poly_gamma            = @poly_gamma@
-Elliptica_BHNS::ID_type               = "BNS"
+#Elliptica_BHNS::ID_type               = "BNS"
 Elliptica_BHNS::Elliptica_bhns_file   = "@id_path@"
 Elliptica_BHNS::Elliptica_bhns_option = "generic"
 
@@ -587,7 +587,7 @@ CarpetIOHDF5::out2D_xy                       = "yes"
 CarpetIOHDF5::out2D_xz                       = "no"
 CarpetIOHDF5::out2D_yz                       = "no"
 CarpetIOHDF5::out2D_xyplane_z                = 0.0
-CarpetIOHDF5::out2D_vars      = "
+CarpetIOHDF5::out2D_vars                     = "
   CarpetReduce::weight
   Grid::coordinates
   HydroBase::rho
@@ -600,17 +600,11 @@ CarpetIOHDF5::out2D_vars      = "
 #  Hydro_Analysis::Hydro_Analysis_Temperature
  "
 
-IOHDF5::out3D_every = 8192 # = 32*every_coarse
-IOHDF5::out3D_vars  = "
- CarpetReduce::weight
- HydroBase::rho
- HydroBase::vel
- HydroBase::eps
- ADMBase::lapse
- ADMBase::shift
- ML_ADMConstraints::ML_Ham
- grid::coordinates
-"
+## 3D:
+#IOHDF5::out3D_every = 8192 # = 32*every_coarse
+#IOHDF5::out3D_vars  = "CarpetReduce::weight HydroBase::rho HydroBase::vel 
+# HydroBase::epsADMBase::lapse ADMBase::shift ML_ADMConstraints::ML_Ham 
+# grid::coordinates "
 
 ## ---------------------------------------------------------------------- ##
 ################
