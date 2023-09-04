@@ -2,8 +2,7 @@
 
 ##
 ## usage: read Elliptica properties file and create ETK param file
-##
-## $ ./me bns.dummy resolution(384, 320, 256, 192, 128)
+## $ ./me -h
 ##
 
 ## ---------------------------------------------------------------------- ##

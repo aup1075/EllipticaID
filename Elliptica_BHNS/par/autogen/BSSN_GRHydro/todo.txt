@@ -1,6 +1,4 @@
 ## todo ##
-. ns tracker is wrong **
-. gws, what are all those surfaces??**
 . change all bhns names to bns one.
 . symmetry and bitant?
 . how often regrid?

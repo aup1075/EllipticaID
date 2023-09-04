@@ -2,8 +2,7 @@
 
 ##
 ## usage: read Elliptica properties file and create ETK param file
-##
-## $ ./me bns.dummy resolution(384, 320, 256, 192, 128)
+## $ ./me -h
 ##
 
 ## ---------------------------------------------------------------------- ##
@@ -14,7 +13,6 @@ import argparse
 ## ---------------------------------------------------------------------- ##
 
 ## global vars
-g_final_time = 2500.0
 g_dtfac      = 0.25
 g_length     = 400
 g_regrid     = 128
@@ -73,10 +71,12 @@ def parse_cli():
       help="path/to/Elliptica/checkpoint.dat")
   p.add_argument("-r", type=float, required=True,
       help="resolution, ex: 256, 128, etc.")
-  p.add_argument("-t", type=float, default=1000.,
+  p.add_argument("-ft", type=float, default=2500.,
+      help="final time")
+  p.add_argument("-mt", type=float, default=1000.,
       help="merger time")
-  p.add_argument("-b", type=str, default='n',
-      help="bitant?(y/n)")
+  p.add_argument("-wt", type=int, default=2880,
+      help="job walltime(minutes)")
       
   args = p.parse_args()
 
@@ -97,7 +97,7 @@ def main():
              "NS2_center_x", "NS2_center_y", "NS2_max_radius",
              "NS1_EoS_K0", "NS1_EoS_Gamma",
              "NS2_EoS_K0", "NS2_EoS_Gamma",
-             "NSNS_x_CM", "NSNS_y_CM"]
+             "NSNS_x_CM", "NSNS_y_CM","NSNS_separation"]
   
   ## read properties file and set the params
   ## NOTE: assumed every param is float
@@ -138,12 +138,11 @@ def main():
     g_data = file.read()
     file.close()
 
-  ## set params in the dummy ##
-  ############################ ///////////////////
-  
+## ---------------------------------------------------------------------- ##
   ## time:
-  setd('cctk_final_time',g_final_time)
+  setd('cctk_final_time',args.ft)
   setd('dtfac',g_dtfac)
+  seti('walltime',args.wt)
   
   ## grid:
   setd('xmin',-g_length)
@@ -152,13 +151,16 @@ def main():
   setd('ymax',g_length)
   setd('zmin',-g_length)
   setd('zmax',g_length)
-  
   seti('regrid_every',g_regrid)
+
+  ## resolution:
+  seti('ncells_x',args.r)
+  seti('ncells_y',args.r)
+  seti('ncells_z',args.r)
   
   ## positions
   setd('position_x_1',param_dict['NS1_center_x'])
   setd('position_y_1',param_dict['NS1_center_y'])
- 
   setd('position_x_2',param_dict['NS2_center_x'])
   setd('position_y_2',param_dict['NS2_center_y'])
   
@@ -191,40 +193,22 @@ def main():
   setd('poly_k',k)
   setd('poly_gamma',g)
  
-  
-  ############################/////////////////////
-  
-  
-  
-  ## bitant?
-  if args.b == 'y':
-    setd('zmin',0)
-    sets('reflection_z','yes')
-    assert(args.r % 2 == 0)
-    seti('ncells_z',args.r/2)
-  else:
-    setd('zmin',-Max)
-    sets('reflection_z','no')
-    seti('ncells_z',args.r)
-
-  ## resolution
-  seti('ncells_x',args.r)
-  seti('ncells_y',args.r)
-  
-  ## CFL
-  setd('dtfac',0.25)
-  
-  ## merger time
-  setd('tmerger',args.t)
-
-  ## checkpoint every
-  seti('checkpoint_every',8192)
+  ## AHF
+  setd('tmerger',args.mt)
+## ---------------------------------------------------------------------- ##
 
   ## write back into the parfile
+  d = param_dict['NSNS_separation']
   output=f'bns_gamma{g:0.1f}_k{k:0.1f}_n{int(args.r)}.par'
   with open(f'{output}', 'w') as file:
+    file.write(f'## final time     = {args.ft:0.2f}\n')
+    file.write(f'## merger time    = {args.mt:0.2f}\n')
+    file.write(f'## walltime       = {args.wt:0.2f}\n')
+    file.write(f'## CFL            = {g_dtfac:0.2f}\n')
+    file.write(f'## Length         = {2*g_length:0.2f}\n')
+    file.write(f'## resolution     = {args.r}\n')
+    file.write(f'## BNS_separation = {d:0.2f}\n')
+    file.write(f'## ID path        = {args.i}\n')
     file.write(g_data)
-    file.close()
   
 if __name__ == '__main__': main()
-
