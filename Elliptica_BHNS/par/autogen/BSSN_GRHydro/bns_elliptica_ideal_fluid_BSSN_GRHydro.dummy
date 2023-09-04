@@ -252,21 +252,18 @@ ADMBase::shift_evolution_method         = ML_BSSN
 ADMBase::dtlapse_evolution_method       = ML_BSSN
 ADMBase::dtshift_evolution_method       = ML_BSSN
 
-ML_BSSN::timelevels                     = 3
-ML_BSSN::my_initial_data                = "ADMBase"
-ML_BSSN::my_initial_boundary_condition  = "extrapolate-gammas"
-ML_BSSN::my_boundary_condition          = "none"
-ML_BSSN::my_rhs_boundary_condition      = "NewRad"
-Boundary::radpower                      = 2 # not really needed I think but who knows what NewRad uses
+ML_BSSN::timelevels                  = 3
+ML_BSSN::initial_boundary_condition  = "extrapolate-gammas"
+ML_BSSN::rhs_boundary_condition      = "NewRad"
+Boundary::radpower                   = 2 # not really needed I think but who knows what NewRad uses
 
 ML_BSSN::harmonicN           = 1      # 1+log
 ML_BSSN::harmonicF           = 2.0    # 1+log
 ML_BSSN::ShiftGammaCoeff     = 0.75
 ML_BSSN::AlphaDriver         = 0.0
 ML_BSSN::BetaDriver          = 1.0
-ML_BSSN::LapseAdvectionCoeff = 1.0
-ML_BSSN::ShiftAdvectionCoeff = 1.0
-
+ML_BSSN::advectLapse         = 1.0
+ML_BSSN::advectShift         = 1.0
 ML_BSSN::MinimumLapse        = 1.0e-8
 ML_BSSN::ML_log_confac_bound = "none"
 ML_BSSN::ML_metric_bound     = "none"
@@ -280,8 +277,7 @@ ML_BSSN::ML_dtshift_bound    = "none"
 
 ML_BSSN::UseSpatialBetaDriver    = 1
 ML_BSSN::SpatialBetaDriverRadius = 50
-
-ML_BSSN::apply_dissipation  = "never"
+ML_BSSN::epsDiss                 = 0.
 
 Dissipation::epsdis = 0.1
 Dissipation::order  = 5
