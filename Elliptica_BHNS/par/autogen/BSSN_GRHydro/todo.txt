@@ -1,4 +1,5 @@
 ## todo ##
+. add a thorn list file
 . change all bhns names to bns one.
 . symmetry and bitant?
 . how often regrid?
