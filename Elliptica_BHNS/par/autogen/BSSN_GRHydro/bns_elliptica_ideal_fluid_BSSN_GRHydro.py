@@ -136,7 +136,6 @@ def main():
   global g_data
   with open(f'{args.d}', 'r') as file:
     g_data = file.read()
-    file.close()
 
 ## ---------------------------------------------------------------------- ##
   ## time:
