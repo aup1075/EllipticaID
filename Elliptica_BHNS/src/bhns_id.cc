@@ -235,7 +235,6 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
   try {
     CCTK_VInfo (CCTK_THORNSTRING, "Calling Elliptica_ID_Reader_T");
     Elliptica_ID_Reader_T *idr = elliptica_id_reader_init(Elliptica_bhns_file,Elliptica_bhns_option);
-    CCTK_REAL BHNS_Omega            = idr->get_param_dbl("BHNS_angular_velocity",idr);
     CCTK_REAL K = poly_K; // make sure ths is in polytropic units
     CCTK_REAL Gamma = poly_gamma; // make sure ths is in polytropic units
     idr->ifields = "alpha,betax,betay,betaz,adm_gxx,adm_gxy,adm_gxz,adm_gyy,adm_gyz,adm_gzz,adm_Kxx,adm_Kxy,adm_Kxz,adm_Kyy,adm_Kyz,adm_Kzz,grhd_rho,grhd_epsl,grhd_vx,grhd_vy,grhd_vz";
@@ -243,8 +242,15 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
     idr->x_coords = xx;
     idr->y_coords = yy;
     idr->z_coords = zz;
-    idr->set_param("BHNS_filler_method",BH_filler_method,idr);
     idr->set_param("ADM_B1I_form","zero",idr);
+    CCTK_REAL Omega = 0.0;
+    if(ID_type=="BHNS"){
+       Omega            = idr->get_param_dbl("BHNS_angular_velocity",idr);
+       idr->set_param("BHNS_filler_method",BH_filler_method,idr);
+    }
+    else{
+       Omega            = idr->get_param_dbl("NSNS_angular_velocity",idr);
+    }
     
     
     elliptica_id_reader_interpolate(idr);
@@ -334,7 +340,7 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
     if (CCTK_EQUALS(initial_lapse, "Elliptica_BHNS")) { 
       if (CCTK_EQUALS (initial_dtlapse, "Elliptica_BHNS")) {
         CCTK_INFO ("Calculating time derivatives of lapse");
-        set_dt_from_domega (CCTK_PASS_CTOC, alp, dtalp, BHNS_Omega);
+        set_dt_from_domega (CCTK_PASS_CTOC, alp, dtalp, Omega);
       } else if (CCTK_EQUALS (initial_dtlapse, "none") or CCTK_EQUALS(initial_dtlapse,"zero")) {
         // do nothing
       } else {
@@ -345,9 +351,9 @@ void Elliptica_BHNS_initialize(CCTK_ARGUMENTS)
     if (CCTK_EQUALS(initial_shift, "Elliptica_BHNS")) { 
       if (CCTK_EQUALS (initial_dtshift, "Elliptica_BHNS")) {
         CCTK_INFO ("Calculating time derivatives of shift");
-        set_dt_from_domega (CCTK_PASS_CTOC, betax, dtbetax, BHNS_Omega);
-        set_dt_from_domega (CCTK_PASS_CTOC, betay, dtbetay, BHNS_Omega);
-        set_dt_from_domega (CCTK_PASS_CTOC, betaz, dtbetaz, BHNS_Omega);
+        set_dt_from_domega (CCTK_PASS_CTOC, betax, dtbetax, Omega);
+        set_dt_from_domega (CCTK_PASS_CTOC, betay, dtbetay, Omega);
+        set_dt_from_domega (CCTK_PASS_CTOC, betaz, dtbetaz, Omega);
       } else if (CCTK_EQUALS (initial_dtshift, "none") or CCTK_EQUALS(initial_dtshift,"zero")) {
         // do nothing
       } else {

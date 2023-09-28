@@ -49,6 +49,11 @@ EXTENDS keyword initial_Y_e
 
 private:
 
+STRING ID_type "type of system to consider"
+{
+  "" :: "BHNS, BNS"
+} "BHNS"
+
 BOOLEAN verbose "Flags a message upon entry to and exit from a subroutine"
 {
 } "yes"
