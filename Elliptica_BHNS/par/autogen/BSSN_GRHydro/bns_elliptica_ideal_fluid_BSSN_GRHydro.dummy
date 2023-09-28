@@ -1,0 +1,679 @@
+## System  = BNS
+## ID      = Elliptica
+## EoS     = ideal fluid
+## Hydro   = GRHydro
+## Gravity = ML_BSSN
+
+## ---------------------------------------------------------------------- ##
+############
+## Thorns ##
+############
+
+ActiveThorns = "Elliptica_BHNS"
+ActiveThorns = "EOS_Omni"
+ActiveThorns = "ML_BSSN ML_BSSN_Helper ML_ADMConstraints"
+ActiveThorns = "GRHydro ADMbase ADMcoupling ADMmacros CoordGauge StaticConformal"
+ActiveThorns = "Boundary CartGrid3D CoordBase Fortran InitBase IOUtil"
+ActiveThorns = "Carpet CarpetInterp CarpetInterp2"
+ActiveThorns = "CarpetIOASCII CarpetIOHDF5 CarpetIOScalar CarpetLib CarpetIOBasic"
+ActiveThorns = "CarpetReduce CarpetRegrid2 CarpetSlab CarpetTracker CarpetMask"
+ActiveThorns = "MoL Slab SpaceMask SphericalSurface"
+ActiveThorns = "RotatingSymmetry180 ReflectionSymmetry"
+ActiveThorns = "Dissipation"
+ActiveThorns = "SummationByParts"
+ActiveThorns = "GenericFD NewRad"
+ActiveThorns = "LocalReduce SymBase Time AEILocalInterp"
+ActiveThorns = "Constants TmunuBase HydroBase "
+ActiveThorns = "LoopControl Formaline"
+ActiveThorns = "Hydro_Analysis NSTracker"
+ActiveThorns = "QuasiLocalMeasures"
+ActiveThorns = "WeylScal4 Multipole" # Wave extraction (Psi4)
+ActiveThorns = "AHFinderDirect"
+ActiveThorns = "Outflow"
+ActiveThorns = "SystemStatistics SystemTopology"
+ActiveThorns = "NaNChecker TerminationTrigger Trigger TimerReport"
+#ActiveThorns = "HTTPD Socket"
+
+## ---------------------------------------------------------------------- ##
+########
+## ID ##
+########
+
+HydroBase::initial_hydro = "Elliptica_BHNS"
+ADMBase::initial_data    = "Elliptica_BHNS"
+ADMBase::initial_lapse   = "Elliptica_BHNS"
+ADMBase::initial_shift   = "zero"
+ADMBase::initial_dtlapse = "Elliptica_BHNS"
+ADMBase::initial_dtshift = "zero"
+
+Elliptica_BHNS::poly_K                = @poly_k@
+Elliptica_BHNS::poly_gamma            = @poly_gamma@
+#Elliptica_BHNS::ID_type               = "BNS"
+Elliptica_BHNS::Elliptica_bhns_file   = "@id_path@"
+Elliptica_BHNS::Elliptica_bhns_option = "generic"
+
+## ---------------------------------------------------------------------- ##
+#########
+## EOS ##
+#########
+
+Elliptica_BHNS::eos_table = "Ideal_Fluid"
+EOS_Omni::poly_K          = @poly_k@
+EOS_Omni::poly_Gamma      = @poly_gamma@
+
+## ---------------------------------------------------------------------- ##
+##########
+## Grid ##
+##########
+
+CartGrid3D::type              = "coordbase"
+Carpet::domain_from_coordbase = "yes"
+CoordBase::domainsize         = "minmax"
+
+CoordBase::xmin = @xmin@
+CoordBase::xmax = @xmax@
+CoordBase::ymin = @ymin@
+CoordBase::ymax = @ymax@
+CoordBase::zmin = @zmin@
+CoordBase::zmax = @zmax@
+
+CoordBase::boundary_size_x_lower     = 3
+CoordBase::boundary_size_y_lower     = 3
+CoordBase::boundary_size_z_lower     = 3
+CoordBase::boundary_size_x_upper     = 3
+CoordBase::boundary_size_y_upper     = 3
+CoordBase::boundary_size_z_upper     = 3
+CoordBase::boundary_shiftout_x_lower = 0
+CoordBase::boundary_shiftout_y_lower = 0
+CoordBase::boundary_shiftout_z_lower = 0
+CoordBase::boundary_staggered_x_lower = "yes"
+CoordBase::boundary_staggered_x_upper = "yes"
+CoordBase::boundary_staggered_y_lower = "yes"
+CoordBase::boundary_staggered_y_upper = "yes"
+CoordBase::boundary_staggered_z_lower = "yes"
+CoordBase::boundary_staggered_z_upper = "yes"
+
+CoordBase::spacing  = "numcells"
+CoordBase::ncells_x = @ncells_x@
+CoordBase::ncells_y = @ncells_y@
+CoordBase::ncells_z = @ncells_z@
+
+ReflectionSymmetry::reflection_x   = "no"
+ReflectionSymmetry::reflection_y   = "no"
+ReflectionSymmetry::reflection_z   = "no"
+ReflectionSymmetry::avoid_origin_x = "yes"
+ReflectionSymmetry::avoid_origin_y = "yes"
+ReflectionSymmetry::avoid_origin_z = "yes"
+
+Driver::ghost_size   = 3
+Driver::ghost_size_x = 3
+Driver::ghost_size_y = 3
+Driver::ghost_size_z = 3
+
+Carpet::enable_all_storage       = "no"
+Carpet::use_buffer_zones         = "yes"
+Carpet::schedule_barriers        = "no"
+Carpet::poison_new_timelevels    = "yes"
+Carpet::check_for_poison         = "no"
+Carpet::init_3_timelevels        = "no"
+Carpet::init_fill_timelevels     = "yes"
+Carpet::time_refinement_factors  = "[1,1,2,4,8,16,32,64,128,256,512]"
+Carpet::max_refinement_levels    = 8
+Carpet::prolongation_order_space = 5
+Carpet::prolongation_order_time  = 2
+Carpet::refinement_centering     = "cell"
+
+CarpetLib::poison_new_memory         = "yes"
+CarpetLib::poison_value              = 114
+CarpetLib::check_bboxes              = "no"
+CarpetLib::interleave_communications = "yes"
+CarpetLib::combine_sends             = "yes"
+
+CarpetInterp::tree_search       = "yes"
+CarpetInterp::check_tree_search = "no"
+
+CarpetRegrid2::freeze_unaligned_levels        = "yes"
+CarpetRegrid2::freeze_unaligned_parent_levels = "yes"
+CarpetRegrid2::ensure_proper_nesting   = "yes"
+CarpetRegrid2::snap_to_coarse          = "yes"
+CarpetRegrid2::symmetry_rotating180    = "no"
+CarpetRegrid2::regrid_every            = @regrid_every@
+CarpetRegrid2::num_centres             = 3
+
+#############
+## Region1 ##
+#############
+CarpetRegrid2::active_1     = "yes"
+CarpetRegrid2::num_levels_1 = 7
+CarpetRegrid2::position_x_1 = @position_x_1@
+CarpetRegrid2::position_y_1 = @position_y_1@
+CarpetRegrid2::radius_1[1]  = @2**5*NS_radius1@
+CarpetRegrid2::radius_1[2]  = @2**4*NS_radius1@
+CarpetRegrid2::radius_1[3]  = @2**3*NS_radius1@
+CarpetRegrid2::radius_1[4]  = @2**2*NS_radius1@
+CarpetRegrid2::radius_1[5]  = @2**1*NS_radius1@
+CarpetRegrid2::radius_1[6]  = @2**0*NS_radius1@
+
+#############
+## Region2 ##
+#############
+CarpetRegrid2::active_2     = "yes"
+CarpetRegrid2::num_levels_2 = 7
+CarpetRegrid2::position_x_2 = @position_x_2@
+CarpetRegrid2::position_y_2 = @position_y_2@
+CarpetRegrid2::radius_2[1]  = @2**5*NS_radius2@
+CarpetRegrid2::radius_2[2]  = @2**4*NS_radius2@
+CarpetRegrid2::radius_2[3]  = @2**3*NS_radius2@
+CarpetRegrid2::radius_2[4]  = @2**2*NS_radius2@
+CarpetRegrid2::radius_2[5]  = @2**1*NS_radius2@
+CarpetRegrid2::radius_2[6]  = @2**0*NS_radius2@
+
+#############
+## Region3 ##
+#############
+CarpetRegrid2::active_3      = "yes"
+CarpetRegrid2::num_levels_3  = 3
+CarpetRegrid2::position_x_3  = 0.0
+CarpetRegrid2::position_y_3  = 0.0
+CarpetRegrid2::radius_3[1]   = 320.0
+CarpetRegrid2::radius_3[2]   = 160.0
+CarpetRegrid2::radius_3[3]   = 80.0
+CarpetRegrid2::radius_3[4]   = 40.0
+CarpetRegrid2::radius_x_3[5] = 20.0
+CarpetRegrid2::radius_y_3[5] = 20.0
+CarpetRegrid2::radius_z_3[5] = 15.0
+CarpetRegrid2::radius_3[6]   = 10.0
+CarpetRegrid2::radius_3[7]   = 5.0
+
+## ---------------------------------------------------------------------- ##
+######################
+## Time integration ##
+######################
+
+MoL::ODE_Method             = "rk4"
+MoL::MoL_Intermediate_Steps = 4
+MoL::MoL_Num_Scratch_Levels = 1
+Time::dtfac = @dtfac@
+
+## ---------------------------------------------------------------------- ##
+###################
+## Hydrodynamics ##
+###################
+
+HydroBase::evolution_method      = "GRHydro"
+HydroBase::timelevels            = 3
+
+GRHydro::sources_spatial_order     = 4
+GRHydro::riemann_solver            = "HLLE"   # Marquina is currently not supported by MP
+GRHydro::recon_method              = "ppm"
+GRHydro::GRHydro_stencil           = 3
+GRHydro::bound                     = "flat"
+GRHydro::rho_abs_min               = 1.e-11
+GRHydro::GRHydro_atmo_tolerance    = 0.01
+GRHydro::c2p_reset_pressure        = "yes"
+GRHydro::GRHydro_eos_type          = "General"
+GRHydro::GRHydro_eos_table         = "Ideal_Fluid"
+
+## these can save some memory since they prevent MoL from allocating unnecessary
+## scratch space for saveandrestore variables
+GRHydro::GRHydro_MaxNumSandRVars = 0
+
+GRHydro::use_enhanced_ppm        = "yes"
+## Parameters are defaults from Colella & Sekora 2008 and McCorquodale & Colella 2011
+GRHydro::sync_conserved_only     = "yes"
+GRHydro::reconstruct_Wv          = "yes"
+GRHydro::c2p_resort_to_bisection = "yes"
+GRHydro::use_cxx_code            = "yes"
+
+InitBase::initial_data_setup_method = "init_some_levels"
+
+TmunuBase::stress_energy_storage = "yes"
+TmunuBase::stress_energy_at_RHS  = "yes"
+TmunuBase::timelevels            =  1
+TmunuBase::prolongation_type     = "none"
+TmunuBase::support_old_CalcTmunu_mechanism = "no"
+
+Hydro_Analysis::Hydro_Analysis_comp_rho_max                      = "true"
+Hydro_Analysis::Hydro_Analysis_rho_max_loc_only_positive_x       = "true"
+Hydro_Analysis::Hydro_Analysis_comp_rho_max_origin_distance      = "yes"
+Hydro_Analysis::Hydro_Analysis_average_multiple_maxima_locations = "yes"
+Hydro_Analysis::Hydro_Analysis_interpolator_name = "Lagrange polynomial interpolation (tensor product)"
+
+## ---------------------------------------------------------------------- ##
+#########################
+## Spacetime evolution ##
+#########################
+
+ADMMacros::spatial_order = 4
+ADMBase::metric_type                    = physical
+ADMBase::evolution_method               = ML_BSSN
+ADMBase::lapse_evolution_method         = ML_BSSN
+ADMBase::shift_evolution_method         = ML_BSSN
+ADMBase::dtlapse_evolution_method       = ML_BSSN
+ADMBase::dtshift_evolution_method       = ML_BSSN
+
+ML_BSSN::timelevels                  = 3
+ML_BSSN::initial_boundary_condition  = "extrapolate-gammas"
+ML_BSSN::rhs_boundary_condition      = "NewRad"
+Boundary::radpower                   = 2 # not really needed I think but who knows what NewRad uses
+
+ML_BSSN::harmonicN           = 1      # 1+log
+ML_BSSN::harmonicF           = 2.0    # 1+log
+ML_BSSN::ShiftGammaCoeff     = 0.75
+ML_BSSN::AlphaDriver         = 0.0
+ML_BSSN::BetaDriver          = 1.0
+ML_BSSN::advectLapse         = 1.0
+ML_BSSN::advectShift         = 1.0
+ML_BSSN::MinimumLapse        = 1.0e-8
+ML_BSSN::ML_log_confac_bound = "none"
+ML_BSSN::ML_metric_bound     = "none"
+ML_BSSN::ML_Gamma_bound      = "none"
+ML_BSSN::ML_trace_curv_bound = "none"
+ML_BSSN::ML_curv_bound       = "none"
+ML_BSSN::ML_lapse_bound      = "none"
+ML_BSSN::ML_dtlapse_bound    = "none"
+ML_BSSN::ML_shift_bound      = "none"
+ML_BSSN::ML_dtshift_bound    = "none"
+
+ML_BSSN::UseSpatialBetaDriver    = 1
+ML_BSSN::SpatialBetaDriverRadius = 50
+ML_BSSN::epsDiss                 = 0.
+
+Dissipation::epsdis = 0.1
+Dissipation::order  = 5
+Dissipation::vars   = "
+        ML_BSSN::ML_log_confac
+        ML_BSSN::ML_metric
+        ML_BSSN::ML_trace_curv
+        ML_BSSN::ML_curv
+        ML_BSSN::ML_Gamma
+        ML_BSSN::ML_lapse
+        ML_BSSN::ML_shift
+        ML_BSSN::ML_dtlapse
+        ML_BSSN::ML_dtshift
+"
+
+## ---------------------------------------------------------------------- ##
+########################
+## Spherical Surfaces ##
+########################
+
+CarpetMask::excluded_surface       [0] = 2
+CarpetMask::excluded_surface_factor[0] = 1.0
+CarpetTracker::surface_name[0] = "Righthand NS"
+CarpetTracker::surface_name[1] = "Lefthand NS"
+
+SpaceMask::use_mask = "yes"
+
+SphericalSurface::nsurfaces = 6
+SphericalSurface::maxntheta = 140
+SphericalSurface::maxnphi   = 240
+
+## for NSTracker 
+SphericalSurface::ntheta      [0] = 55
+SphericalSurface::nphi        [0] = 96
+SphericalSurface::nghoststheta[0] = 2
+SphericalSurface::nghostsphi  [0] = 2
+SphericalSurface::name        [0] = "Righthand NS"
+
+SphericalSurface::ntheta      [1] = 55
+SphericalSurface::nphi        [1] = 96
+SphericalSurface::nghoststheta[1] = 2
+SphericalSurface::nghostsphi  [1] = 2
+SphericalSurface::name        [1] = "Lefthand NS"
+
+## for QuasiLocalMeasures and Outflow
+SphericalSurface::ntheta      [2]  = 55
+SphericalSurface::nphi        [2]  = 96
+SphericalSurface::nghoststheta[2]  = 2
+SphericalSurface::nghostsphi  [2]  = 2
+SphericalSurface::set_spherical[2] = yes
+SphericalSurface::radius      [2]  = 100
+SphericalSurface::name        [2]  = "waveextract surface at 100"
+
+SphericalSurface::ntheta      [3]  = 55
+SphericalSurface::nphi        [3]  = 96
+SphericalSurface::nghoststheta[3]  = 2
+SphericalSurface::nghostsphi  [3]  = 2
+SphericalSurface::set_spherical[3] = yes
+SphericalSurface::radius      [3]  = 200
+SphericalSurface::name        [3]  = "waveextract surface at 200"
+
+SphericalSurface::ntheta      [4]  = 55
+SphericalSurface::nphi        [4]  = 96
+SphericalSurface::nghoststheta[4]  = 2
+SphericalSurface::nghostsphi  [4]  = 2
+SphericalSurface::set_spherical[4] = yes
+SphericalSurface::radius      [4]  = 300
+SphericalSurface::name        [4]  = "waveextract surface at 300"
+
+SphericalSurface::ntheta      [5]  = 55
+SphericalSurface::nphi        [5]  = 96
+SphericalSurface::nghoststheta[5]  = 2
+SphericalSurface::nghostsphi  [5]  = 2
+SphericalSurface::set_spherical[5] = yes
+SphericalSurface::radius      [5]  = 400
+SphericalSurface::name        [5]  = "waveextract surface at 400"
+
+## ---------------------------------------------------------------------- ##
+###############
+## NSTracker ##
+###############
+
+NSTracker::NSTracker_SF_Name          = "Righthand NS"
+NSTracker::NSTracker_SF_Name_Opposite = "Lefthand NS"
+NSTracker::NSTracker_max_distance = 3
+NSTracker::NSTracker_verbose = "yes"
+NSTracker::NSTracker_tracked_location = "Hydro_Analysis::Hydro_Analysis_rho_max_loc"
+
+## ---------------------------------------------------------------------- ##
+########################
+## QuasiLocalMeasures ##
+########################
+
+#QuasiLocalMeasures::verbose       = yes
+QuasiLocalMeasures::num_surfaces  = 2
+QuasiLocalMeasures::spatial_order = 4
+QuasiLocalMeasures::interpolator  = "Lagrange polynomial interpolation"
+QuasiLocalMeasures::interpolator_options = "order=4"
+QuasiLocalMeasures::surface_name[0] = "waveextract surface at 100"
+QuasiLocalMeasures::surface_name[1] = "waveextract surface at 200"
+QuasiLocalMeasures::surface_name[2] = "waveextract surface at 300"
+QuasiLocalMeasures::surface_name[3] = "waveextract surface at 400"
+
+## ---------------------------------------------------------------------- ##
+#############
+## Outflow ##
+#############
+
+Outflow::compute_every    = 512
+Outflow::num_detectors    = 4
+Outflow::surface_name[0]  = "waveextract surface at 100"
+Outflow::surface_name[1]  = "waveextract surface at 200"
+Outflow::surface_name[2]  = "waveextract surface at 300"
+Outflow::surface_name[3]  = "waveextract surface at 400"
+Outflow::threshold_on_var = "eninf"
+Outflow::num_thresholds   = 1
+Outflow::output_2d_data   = "yes"
+Outflow::out_format       = ".9g"
+Outflow::extra_variables  = "
+    ADMBase::lapse
+    HydroBase::rho
+    HydroBase::vel
+    HydroBase::Y_e
+    HydroBase::entropy
+    HydroBase::temperature
+"
+
+## ---------------------------------------------------------------------- ##
+########
+## GW ##
+########
+
+WeylScal4::offset   = 1e-8 
+WeylScal4::fd_order = "4th" 
+WeylScal4::verbose  = 0 
+
+Multipole::nradii    = 6
+Multipole::l_max     = 8
+Multipole::ntheta    = 140
+Multipole::nphi      = 240
+Multipole::out_every = 256
+Multipole::radius[0] = 100
+Multipole::radius[1] = 200
+Multipole::radius[2] = 300
+Multipole::radius[3] = 400
+Multipole::radius[4] = 500
+Multipole::radius[5] = 600
+Multipole::variables = "WeylScal4::Psi4r{sw=-2 cmplx='WeylScal4::Psi4i' name='Psi4'}"
+
+## ---------------------------------------------------------------------- ##
+#########
+## AHF ##
+#########
+
+AHFinderDirect::N_horizons                               = 1
+AHFinderDirect::find_every                               = 512
+AHFinderDirect::output_h_every                           = 512
+AHFinderDirect::max_Newton_iterations__initial           = 50
+AHFinderDirect::max_Newton_iterations__subsequent        = 50
+AHFinderDirect::max_allowable_Theta_growth_iterations    = 10
+AHFinderDirect::max_allowable_Theta_nonshrink_iterations = 10
+
+AHFinderDirect::geometry_interpolator_name = "Lagrange polynomial interpolation"
+AHFinderDirect::geometry_interpolator_pars = "order=4"
+AHFinderDirect::surface_interpolator_name  = "Lagrange polynomial interpolation"
+AHFinderDirect::surface_interpolator_pars  = "order=4"
+AHFinderDirect::verbose_level              = "physics highlights"
+AHFinderDirect::move_origins               = "yes"
+
+AHFinderDirect::origin_x[1]                              = 0.0
+AHFinderDirect::initial_guess__coord_sphere__x_center[1] = 0.0
+AHFinderDirect::initial_guess__coord_sphere__y_center[1] = 0.0
+AHFinderDirect::initial_guess__coord_sphere__z_center[1] = 0.0
+AHFinderDirect::initial_guess__coord_sphere__radius[1]   = 1.0
+AHFinderDirect::which_surface_to_store_info[1]           = 0
+AHFinderDirect::set_mask_for_individual_horizon[1]       = "no"
+AHFinderDirect::reset_horizon_after_not_finding[1]       = "no"
+AHFinderDirect::find_after_individual_time[1]            = @tmerger@
+AHFinderDirect::max_allowable_horizon_radius[1]          = 5.0
+
+AHFinderDirect::reshape_while_moving    = "yes"
+AHFinderDirect::predict_origin_movement = "yes"
+
+## ---------------------------------------------------------------------- ##
+################
+## Diagnostic ##
+################
+
+Carpet::output_timers_every = 0
+Carpet::storage_verbose   = "no"
+Carpet::verbose           = "no"
+Carpet::veryverbose       = "no"
+Carpet::grid_structure_filename   = "carpet-grid-structure"
+Carpet::grid_coordinates_filename = "carpet-grid-coordinates"
+
+CarpetLib::output_bboxes   = "no"
+CarpetMask::verbose        = "no"
+CarpetReduce::verbose      = "no"
+CarpetRegrid2::verbose     = "no"
+CarpetRegrid2::veryverbose = "no"
+CarpetTracker::verbose     = "no"
+
+
+TimerReport::out_every    = 4096
+TimerReport::out_filename = "TimerReport"
+TimerReport::output_all_timers          = "yes"
+TimerReport::output_all_timers_together = "yes"
+TimerReport::output_all_timers_readable = "yes"
+TimerReport::n_top_timers               = 40
+
+QuasiLocalMeasures::verbose = "no"
+SphericalSurface::verbose   = "no"
+
+## ---------------------------------------------------------------------- ##
+#############
+## Utility ##
+#############
+
+NaNChecker::check_every = 128 ## twice for every_coarse
+NaNChecker::check_vars  = "
+            ADMBase::curv 
+            ADMBase::metric 
+            ADMBase::lapse 
+            ADMBase::shift 
+            HydroBase::rho 
+            HydroBase::eps 
+            HydroBase::press 
+            HydroBase::vel
+"
+NaNChecker::action_if_found =  "terminate"
+#NaNChecker::action_if_found = "just warn" #"terminate", "just warn", "abort"
+
+## ---------------------------------------------------------------------- ##
+############
+## Output ##
+############
+
+IO::out_dir = $parfile
+
+IOBasic::outInfo_every = 1
+IOBasic::outInfo_reductions = "maximum"
+IOBasic::outInfo_vars  = "
+ Carpet::physical_time_per_hour
+ HydroBase::rho
+ ML_ADMConstraints::ML_Ham
+ SystemStatistics::maxrss_mb
+ GRHydro::dens{reductions = 'sum maximum'}
+ HydroBase::w_lorentz
+"
+
+IOScalar::outScalar_every      = 256 # every_coarse
+IOScalar::all_reductions_in_one_file = "yes"
+IOScalar::one_file_per_group   = "yes"
+IOScalar::outScalar_reductions = "minimum maximum average norm1 norm2"
+IOScalar::outScalar_vars       = "
+ ADMBase::lapse
+ ADMBase::shift
+ ADMBase::metric
+ ADMBase::curv
+ HydroBase::rho
+ HydroBase::vel
+ HydroBase::w_lorentz
+ GRHydro::dens{reductions = 'minimum maximum average norm1 norm2 sum'}
+ SystemStatistics::process_memory_mb
+ SphericalSurface::sf_radius
+ ML_ADMConstraints::ML_Ham
+"
+
+IOASCII::one_file_per_group = "yes"
+IOASCII::compact_format     = "yes"
+
+IOASCII::out0D_every     = 256 # every_coarse
+IOASCII::out0D_vars      = "
+ Carpet::timing
+ QuasiLocalMeasures::qlm_scalars
+ SphericalSurface::sf_active
+ SphericalSurface::sf_valid
+ SphericalSurface::sf_info
+ SphericalSurface::sf_radius
+ SphericalSurface::sf_origin
+ SphericalSurface::sf_coordinate_descriptors
+ Hydro_Analysis::Hydro_Analysis_rho_max_loc
+ Hydro_Analysis::Hydro_Analysis_rho_max_origin_distance
+"
+
+## Set these IOASCII options for initial data only:
+IOASCII::out1D_every     = 0
+IOASCII::out1D_d         = "no"
+IOASCII::out1D_vars      = "
+ HydroBase::rho
+ HydroBase::vel
+ ADMBase::lapse
+ ADMBase::shift
+ ADMBase::metric
+ ADMBase::curv
+ ML_ADMConstraints::ML_Ham
+"
+
+CarpetIOHDF5::one_file_per_group             = "no"   # this is required by multipatch
+CarpetIOHDF5::open_one_input_file_at_a_time  = "yes"
+CarpetIOHDF5::out2D_every                    = 1536   # 6*every coarse
+CarpetIOHDF5::out2D_xy                       = "yes"
+CarpetIOHDF5::out2D_xz                       = "no"
+CarpetIOHDF5::out2D_yz                       = "no"
+CarpetIOHDF5::out2D_xyplane_z                = 0.0
+CarpetIOHDF5::out2D_vars                     = "
+  CarpetReduce::weight
+  Grid::coordinates
+  HydroBase::rho
+  HydroBase::vel
+  HydroBase::eps
+  ADMBase::lapse
+  ADMBase::shift
+  ADMBase::metric
+  ML_ADMConstraints::ML_Ham
+#  Hydro_Analysis::Hydro_Analysis_Temperature
+ "
+
+## 3D:
+#IOHDF5::out3D_every = 8192 # = 32*every_coarse
+#IOHDF5::out3D_vars  = "CarpetReduce::weight HydroBase::rho HydroBase::vel 
+# HydroBase::epsADMBase::lapse ADMBase::shift ML_ADMConstraints::ML_Ham 
+# grid::coordinates "
+
+## ---------------------------------------------------------------------- ##
+################
+## Checkpoint ##
+################
+
+IOHDF5::checkpoint          = "yes"
+IO::checkpoint_dir          = $parfile
+IO::checkpoint_ID           = "yes"
+IO::checkpoint_on_terminate = "yes"
+IO::recover                 = "autoprobe"
+IO::recover_dir             = $parfile
+
+## ---------------------------------------------------------------------- ##
+############
+## Cactus ##
+############
+
+Cactus::cctk_run_title     = "Elliptica-ETK-BNS"
+Cactus::cctk_full_warnings = "yes"
+Cactus::terminate          = "time"
+Cactus::cctk_final_time    = @cctk_final_time@
+Cactus::highlight_warning_messages = "no"
+
+## ---------------------------------------------------------------------- ##
+#############
+## Trigger ##
+#############
+
+TerminationTrigger::max_walltime            = @walltime@
+## Trigger termination 30 minutes before the walltime is reached
+TerminationTrigger::on_remaining_walltime   = 30
+TerminationTrigger::termination_from_file   = yes
+TerminationTrigger::termination_file        = "terminate.txt"
+TerminationTrigger::create_termination_file = yes
+
+Trigger::Trigger_Number = 4
+
+Trigger::Trigger_Checked_Variable[0]="Hydro_Analysis::Hydro_Analysis_rho_max_origin_distance"
+Trigger::Trigger_Reduction       [0]=""
+Trigger::Trigger_Relation        [0]="<"
+Trigger::Trigger_Checked_Value   [0]=10
+Trigger::Trigger_Reaction        [0]="steerscalar"
+Trigger::Trigger_Steered_Scalar      [0] = "CarpetRegrid2::num_levels[2]" # == num_levels_3
+Trigger::Trigger_Steered_Scalar_Value[0] = "7"
+
+Trigger::Trigger_Checked_Variable[1]="ADMBase::alp"
+Trigger::Trigger_Reduction       [1]="minimum"
+Trigger::Trigger_Relation        [1]="<"
+Trigger::Trigger_Checked_Value   [1]=0.1
+Trigger::Trigger_Reaction        [1]="steerscalar"
+Trigger::Trigger_Steered_Scalar      [1] = "CarpetRegrid2::num_levels[2]" # == num_levels_3
+Trigger::Trigger_Steered_Scalar_Value[1] = "8"
+
+Trigger::Trigger_Checked_Variable[2]="SphericalSurface::sf_valid[2]"
+Trigger::Trigger_Reduction       [2]=""
+Trigger::Trigger_Relation        [2]=">"
+Trigger::Trigger_Checked_Value   [2]=0.
+Trigger::Trigger_Reaction        [2]="steerscalar"
+Trigger::Trigger_Steered_Scalar      [2] = "CarpetRegrid2::num_levels[0]" # == num_levels_1
+Trigger::Trigger_Steered_Scalar_Value[2] = "1"
+
+Trigger::Trigger_Checked_Variable[3]="SphericalSurface::sf_valid[2]"
+Trigger::Trigger_Reduction       [3]=""
+Trigger::Trigger_Relation        [3]=">"
+Trigger::Trigger_Checked_Value   [3]=0.
+Trigger::Trigger_Reaction        [3]="steerscalar"
+Trigger::Trigger_Steered_Scalar      [3] = "CarpetRegrid2::num_levels[1]" # == num_levels_2
+Trigger::Trigger_Steered_Scalar_Value[3] = "1"
+
+#HTTPD::user     = "cactus"
+#HTTPD::password = "einstein"
+
+#############
+## THE END ##
+#############
