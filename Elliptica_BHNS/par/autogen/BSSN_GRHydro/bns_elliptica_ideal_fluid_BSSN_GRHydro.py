@@ -14,7 +14,6 @@ import argparse
 
 ## global vars
 g_dtfac      = 0.25
-g_length     = 400
 g_regrid     = 128
 g_ns_expand  = 1.2
 g_data       = ''
@@ -143,21 +142,7 @@ def main():
   setd('dtfac',g_dtfac)
   seti('walltime',args.wt)
   
-  ## grid:
-  setd('xmin',-g_length)
-  setd('xmax',g_length)
-  setd('ymin',-g_length)
-  setd('ymax',g_length)
-  setd('zmin',-g_length)
-  setd('zmax',g_length)
-  seti('regrid_every',g_regrid)
-
-  ## resolution:
-  seti('ncells_x',args.r)
-  seti('ncells_y',args.r)
-  seti('ncells_z',args.r)
-  
-  ## positions
+  ## NS positions
   setd('position_x_1',param_dict['NS1_center_x'])
   setd('position_y_1',param_dict['NS1_center_y'])
   setd('position_x_2',param_dict['NS2_center_x'])
@@ -183,6 +168,22 @@ def main():
   setd('2**4*NS_radius2',2**4*ns_r2)
   setd('2**5*NS_radius2',2**5*ns_r2)
 
+  ## grid:
+  length = ns_r1 if ns_r1 > ns_r2 else ns_r2
+  length *= 2**6 # as biggest level is 2**5
+  setd('xmin',-length)
+  setd('xmax',length)
+  setd('ymin',-length)
+  setd('ymax',length)
+  setd('zmin',-length)
+  setd('zmax',length)
+  seti('regrid_every',g_regrid)
+
+  ## resolution:
+  seti('ncells_x',args.r)
+  seti('ncells_y',args.r)
+  seti('ncells_z',args.r)
+
   ## id path
   sets('id_path',args.i)
 
@@ -200,13 +201,16 @@ def main():
   d = param_dict['NSNS_separation']
   output=f'bns_gamma{g:0.1f}_k{k:0.1f}_n{int(args.r)}.par'
   with open(f'{output}', 'w') as file:
-    file.write(f'## final time     = {args.ft:0.2f} M0\n')
-    file.write(f'## merger time    = {args.mt:0.2f} M0\n')
-    file.write(f'## walltime       = {args.wt/(60.):0.2f} h\n')
-    file.write(f'## CFL            = {g_dtfac:0.2f}\n')
-    file.write(f'## Length         = {2*g_length:0.2f} M0\n')
-    file.write(f'## resolution     = {args.r}\n')
-    file.write(f'## BNS_separation = {d:0.2f} M0\n')
+    file.write(f'## final time     = {args.ft:0.4f} M0\n')
+    file.write(f'## merger time    = {args.mt:0.4f} M0\n')
+    file.write(f'## walltime       = {args.wt/(60.):0.4f} h\n')
+    file.write(f'## Length         = {2*length:0.4f} M0\n')
+    file.write(f'## dx_reg1_lev6   = {2*ns_r1/args.r:0.4f} M0\n')
+    file.write(f'## dx_reg2_lev6   = {2*ns_r2/args.r:0.4f} M0\n')
+    file.write(f'## dx_coarsest    = {2*length/args.r:0.4f} M0\n')
+    file.write(f'## CFL            = {g_dtfac:0.4f}\n')
+    file.write(f'## ncells_xyz     = {args.r}\n')
+    file.write(f'## BNS_separation = {d:0.4f} M0\n')
     file.write(f'## ID path        = {args.i}\n')
     file.write(g_data)
   
