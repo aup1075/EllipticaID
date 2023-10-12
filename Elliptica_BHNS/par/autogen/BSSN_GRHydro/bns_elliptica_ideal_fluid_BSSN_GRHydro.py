@@ -14,8 +14,8 @@ import argparse
 
 ## global vars
 g_dtfac      = 0.25
-g_regrid     = 128
-g_ns_expand  = 1.2
+g_regrid     = 64
+g_ns_expand  = 1.2 ## 20% bigger than NS radius
 g_data       = ''
 
 def sets(rhs,val,comment=''):
@@ -169,8 +169,8 @@ def main():
   setd('2**5*NS_radius2',2**5*ns_r2)
 
   ## grid:
-  length = ns_r1 if ns_r1 > ns_r2 else ns_r2
-  length *= 2**6 # as biggest level is 2**5
+  min_r = ns_r1 if ns_r1 < ns_r2 else ns_r2
+  length = 2**6 * min_r # as biggest level is 2**5
   setd('xmin',-length)
   setd('xmax',length)
   setd('ymin',-length)
@@ -205,8 +205,9 @@ def main():
     file.write(f'## merger time    = {args.mt:0.4f} M0\n')
     file.write(f'## walltime       = {args.wt/(60.):0.4f} h\n')
     file.write(f'## Length         = {2*length:0.4f} M0\n')
-    file.write(f'## dx_reg1_lev6   = {2*ns_r1/args.r:0.4f} M0\n')
-    file.write(f'## dx_reg2_lev6   = {2*ns_r2/args.r:0.4f} M0\n')
+    file.write(f'## dx_reg1_lev6  <= {2*ns_r1/args.r:0.4f} M0\n')
+    file.write(f'## dx_reg2_lev6  <= {2*ns_r2/args.r:0.4f} M0\n')
+    file.write(f'## dx_NS required<= {min_r/64:0.4f} M0\n')
     file.write(f'## dx_coarsest    = {2*length/args.r:0.4f} M0\n')
     file.write(f'## CFL            = {g_dtfac:0.4f}\n')
     file.write(f'## ncells_xyz     = {args.r}\n')
